@@ -38,6 +38,8 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
+    /*TEST GITHUB*/
+
     final String svUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
 
     private BluetoothAdapter bluetoothAdapter = null;
