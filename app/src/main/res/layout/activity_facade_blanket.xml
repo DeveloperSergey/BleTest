@@ -19,6 +19,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:srcCompat="@drawable/sinch_background" />
+
         <SeekBar
             android:id="@+id/seekBarPwm"
             android:layout_width="match_parent"
