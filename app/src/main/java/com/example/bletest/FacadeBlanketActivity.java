@@ -3,6 +3,7 @@ package com.example.bletest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.app.Activity;
@@ -35,13 +37,21 @@ import java.util.UUID;
 public class FacadeBlanketActivity extends AppCompatActivity implements BleConnector.BleCallbacks {
 
     final String svUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
-    final String svcEnableUUID = "0000fff1-0000-1000-8000-00805f9b34fb";
+    final String svcFactoryUUID = "0000fff1-0000-1000-8000-00805f9b34fb";
+    final String svcTimeUUID = "0000fff2-0000-1000-8000-00805f9b34fb";
+    final String svcEnableUUID = "0000fff3-0000-1000-8000-00805f9b34fb";
+
+    final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     // GUI
     Context ctx;
     SeekBar seekBarPwm;
-    TextView textViewTime;
-    private Timer myTimer;
+    TextView textViewTime, textViewTimeDev, textViewFactory;
+    Timer timerApp, timerDev;
+
+    // Data
+    Date dateDev;
+    int hardware, firmware;
 
     // BLE
     BleConnector bleConnector;
@@ -75,6 +85,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.i("mytag", String.valueOf(seekBar.getProgress()));
+
                 if (bleConnector.bleGatt == null) return;
                 BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
                 BluetoothGattCharacteristic charEnable = service.getCharacteristic(UUID.fromString(svcEnableUUID));
@@ -90,10 +101,12 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         });
 
         textViewTime = (TextView)findViewById(R.id.textViewTime);
+        textViewTimeDev = (TextView)findViewById(R.id.textViewTimeDev);
+        textViewFactory = (TextView)findViewById(R.id.textViewFactory);
 
         // Test time UNIX - OK
-        // Get current timestamp
-        Date date = new Date();
+
+        /*Date date = new Date();
         Log.i("mytag", (date.toString()));
 
         // Convert to UNIX
@@ -102,34 +115,103 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
 
         // Back convert to Date
         Date date2 = new Date(value * 1000);
-        Log.i("mytag", (date2.toString()));
+        Log.i("mytag", (date2.toString()));*/
 
         // Timer for time updating
-        myTimer = new Timer();
-        myTimer.schedule(new TimerTask() {
+        timerApp = new Timer();
+        timerApp.schedule(new TimerTask() {
             @Override
             public void run() {
-                TimerMethod();
+                TimerMethodApp();
             }
         }, 0, 1000);
+
+        timerDev = new Timer();
+        timerDev.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                TimerMethodDev();
+            }
+        }, 0, 3000);
     }
 
     @Override
     public void connectedCallback(List<BluetoothGattService> services) {
-        Log.i("mytag", "CONNECTED CALLBACK");
-        ((ImageView)findViewById(R.id.imageView)).setImageDrawable(ctx.getDrawable(R.drawable.state_green));
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //Log.i("mytag", "CONNECTED CALLBACK");
+                ((ImageView)findViewById(R.id.imageView)).setImageDrawable(ctx.getDrawable(R.drawable.state_green));
+
+                if (!bleConnector.isConnect()) return;
+                BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+                BluetoothGattCharacteristic charFactory = service.getCharacteristic(UUID.fromString(svcFactoryUUID));
+                bleConnector.bleGatt.readCharacteristic(charFactory);
+            }
+        });
     }
 
     @Override
     public void disconnectedCallback() {
-        Log.i("mytag", "DISCONNECTED CALLBACK");
-        ((ImageView)findViewById(R.id.imageView)).setImageDrawable(ctx.getDrawable(R.drawable.state_red));
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //Log.i("mytag", "DISCONNECTED CALLBACK");
+                ((ImageView)findViewById(R.id.imageView)).setImageDrawable(ctx.getDrawable(R.drawable.state_red));
+            }
+        });
+
     }
 
     @Override
     public void writedCharCallback() {
-        Log.i("mytag", "WRITED CALLBACK");
-        Toast.makeText(ctx, "Writed", Toast.LENGTH_LONG).show();
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //Log.i("mytag", "WRITED CALLBACK");
+                Toast.makeText(ctx, "Synchronized", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void readedCharCallback(BluetoothGattCharacteristic characteristic) {
+
+        UUID uuid = characteristic.getUuid();
+        if(uuid.toString().equals(svcFactoryUUID)){
+            hardware = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 0);
+            firmware = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 2);
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    textViewFactory.setText("HW: " + String.valueOf(hardware) + " " +
+                            "FW: " + String.valueOf(firmware));
+                }
+            });
+        }
+        else if(uuid.toString().equals(svcTimeUUID)) {
+            //Log.i("mytag", "READED CALLBACK");
+            long value = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT32, 0);
+            int lrc = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 4);
+
+            int lrcSum = 0;
+            for (byte b : characteristic.getValue())
+                lrcSum = (byte) (lrcSum + b);
+
+            //Log.i("mytag", String.valueOf(value) );
+            //Log.i("mytag", String.valueOf(lrc) );
+            //Log.i("mytag", String.valueOf(lrcSum) );
+
+            if (lrcSum == 0) {
+                dateDev = new Date(value * 1000);
+                this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        textViewTimeDev.setText(dateFormat.format(dateDev));
+                    }
+                });
+            }
+        }
     }
 
     @Override
@@ -145,26 +227,59 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     }
 
     public void ledClicked(View view){
-        ((ImageView)findViewById(R.id.imageView)).setImageDrawable(ctx.getDrawable(R.drawable.state_green));
+        setTimeInDevice();
     }
 
-    private void TimerMethod() {
+    private void TimerMethodApp() {
         //This method is called directly by the timer
         //and runs in the same thread as the timer.
 
         //We call the method that will work with the UI
         //through the runOnUiThread method.
-        this.runOnUiThread(Timer_Tick);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textViewTime.setText(dateFormat.format(new Date()));
+            }
+        });
     }
 
+    private void TimerMethodDev() {
+        //This method is called directly by the timer
+        //and runs in the same thread as the timer.
 
-    private Runnable Timer_Tick = new Runnable() {
-        public void run() {
-            //This method runs in the same thread as the UI.
+        //We call the method that will work with the UI
+        //through the runOnUiThread method.
+        if ( !bleConnector.isConnect() ) return;
+        BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+        BluetoothGattCharacteristic charTime = service.getCharacteristic(UUID.fromString(svcTimeUUID));
+        bleConnector.bleGatt.readCharacteristic(charTime);
+    }
 
-            //Do something to the UI thread here
-            textViewTime.setText(new Date().toString());
+    private void setTimeInDevice(){
+        // Write time
+        if (!bleConnector.isConnect()) return;
+        BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+        BluetoothGattCharacteristic charTime = service.getCharacteristic(UUID.fromString(svcTimeUUID));
+        long value = new Date().getTime()/1000;
+        //Log.i("mytag", String.valueOf(value));
+
+        byte[] values = new byte[]{
+                (byte) (value & 0xFF),
+                (byte) ((value >> 8) & 0xFF),
+                (byte) ((value >> 16) & 0xFF),
+                (byte) ((value >> 24) & 0xFF),
+                0
+        };
+        int lrc = 0;
+        for(byte b : values){
+            lrc = (byte)(lrc + b);
         }
-    };
+        lrc = (255 - lrc) + 1;
+        //Log.i("mytag", String.valueOf(lrc));
+        values[4] = (byte)lrc;
 
+        charTime.setValue(values);
+        bleConnector.bleGatt.writeCharacteristic(charTime);
+    }
 }

@@ -114,4 +114,9 @@ public class DeviceActivity extends AppCompatActivity implements BleConnector.Bl
     public void writedCharCallback() {
 
     }
+
+    @Override
+    public void readedCharCallback(BluetoothGattCharacteristic characteristic) {
+
+    }
 }

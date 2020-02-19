@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,19 +19,20 @@ public class BleConnector{
         void connectedCallback(List<BluetoothGattService> services);
         void disconnectedCallback();
         void writedCharCallback();
+        void readedCharCallback(BluetoothGattCharacteristic characteristic);
     }
 
     private Context context;
     private BluetoothDevice device = null;
     private BleCallbacks callbacks;
     public BluetoothGatt bleGatt = null;
+    private boolean connected = false;
 
     final int STATE_DISCONNECTED = 0;
     final int STATE_CONNECTING = 1;
     final int STATE_CONNECTED = 2;
 
     public List<BluetoothGattService> services;
-    public List<BluetoothGattCharacteristic> chars;
 
     final BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
 
@@ -40,12 +42,15 @@ public class BleConnector{
 
             switch (newState) {
                 case STATE_DISCONNECTED:
+                    connected = false;
                     Log.i("mytag", "STATE_DISCONNECTED");
                     break;
                 case STATE_CONNECTING:
+                    connected = false;
                     Log.i("mytag", "STATE_CONNECTING");
                     break;
                 case STATE_CONNECTED:
+                    connected = true;
                     Log.i("mytag", "STATE_CONNECTED");
                     break;
             };
@@ -73,19 +78,6 @@ public class BleConnector{
                 services = gatt.getServices();
                 callbacks.connectedCallback(services);
 
-                /*/ Services
-                Log.i("mytag", "SERVICES: ");
-                for (int i = 0; i < services.size(); i++) {
-                    Log.i("mytag", services.get(i).getUuid().toString());
-                }
-                BluetoothGattService service = gatt.getService(UUID.fromString(svUUID));*/
-
-                /*/ Characteristics
-                Log.i("mytag", "CHARS: ");
-                chars = service.getCharacteristics();
-                for (int i = 0; i < chars.size(); i++) {
-                    Log.i("mytag", chars.get(i).getUuid().toString());
-                }*/
             } else {
                 Log.i("mytag", "onServicesDiscovered failed!");
             }
@@ -104,6 +96,7 @@ public class BleConnector{
             super.onCharacteristicRead(gatt, characteristic, status);
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                callbacks.readedCharCallback(characteristic);
             } else
                 Log.i("mytag", "Red char failed!");
         }
@@ -132,11 +125,6 @@ public class BleConnector{
         bleGatt.disconnect();
     }
     public boolean isConnect(){
-        if(bleGatt != null){
-            if(bleGatt.getConnectionState(device) == STATE_CONNECTED)
-                return true;
-        }
-        return false;
+        return connected;
     }
-
 }
