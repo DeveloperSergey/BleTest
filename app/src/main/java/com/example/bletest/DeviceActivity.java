@@ -106,6 +106,11 @@ public class DeviceActivity extends AppCompatActivity implements BleConnector.Bl
     }
 
     @Override
+    public void disconnectedCallback() {
+
+    }
+
+    @Override
     public void writedCharCallback() {
 
     }

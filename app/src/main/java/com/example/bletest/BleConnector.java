@@ -16,6 +16,7 @@ public class BleConnector{
 
     interface BleCallbacks{
         void connectedCallback(List<BluetoothGattService> services);
+        void disconnectedCallback();
         void writedCharCallback();
     }
 
@@ -59,6 +60,7 @@ public class BleConnector{
                 bleGatt.close();
                 bleGatt = null;
                 device = null;
+                callbacks.disconnectedCallback();
             }
 
         }
