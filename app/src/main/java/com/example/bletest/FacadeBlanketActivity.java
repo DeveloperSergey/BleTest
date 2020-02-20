@@ -15,23 +15,11 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
-import android.app.Activity;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.Handler.Callback;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 public class FacadeBlanketActivity extends AppCompatActivity implements BleConnector.BleCallbacks {

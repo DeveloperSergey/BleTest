@@ -68,5 +68,166 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/temperature_background"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Board:" />
+
+                <TextView
+                    android:id="@+id/textViewTempBoard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="25 &#176;C"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/temperature_background"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Sensor 1:" />
+
+                <TextView
+                    android:id="@+id/textViewTemp1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="25 &#176;C"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/temperature_background"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Sensor 2:" />
+
+                <TextView
+                    android:id="@+id/textViewTemp2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="25 &#176;C"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/temperature_background"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Sensor 3:" />
+
+                <TextView
+                    android:id="@+id/textViewTemp3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="25 &#176;C"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/temperature_background"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Sensor 4:" />
+
+                <TextView
+                    android:id="@+id/textViewTemp4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="25 &#176;C"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/temperature_background"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Sensor 5:" />
+
+                <TextView
+                    android:id="@+id/textViewTemp5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="25 &#176;C"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/temperature_background"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Sensor 6:" />
+
+                <TextView
+                    android:id="@+id/textViewTemp6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="25 &#176;C"
+                    android:textSize="18sp" />
+            </TableRow>
+        </TableLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
