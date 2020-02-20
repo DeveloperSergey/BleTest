@@ -16,6 +16,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Date;
@@ -36,6 +37,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     SeekBar seekBarPwm;
     TextView textViewTime, textViewTimeDev, textViewFactory;
     Timer timerApp, timerDev;
+    ArrayList<TextView> textViewsTemp = new ArrayList<>();
 
     // Data
     Date dateDev;
@@ -91,6 +93,15 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         textViewTime = (TextView)findViewById(R.id.textViewTime);
         textViewTimeDev = (TextView)findViewById(R.id.textViewTimeDev);
         textViewFactory = (TextView)findViewById(R.id.textViewFactory);
+
+        // 7 fields for temperatures <-- temperatures from char
+        textViewsTemp.add((TextView) findViewById(R.id.textViewTempBoard));
+        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp1));
+        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp2));
+        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp3));
+        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp4));
+        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp5));
+        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp6));
 
         // Test time UNIX - OK
 
