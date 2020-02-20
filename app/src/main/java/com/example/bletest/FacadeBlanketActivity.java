@@ -11,10 +11,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.florescu.android.rangeseekbar.RangeSeekBar;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -34,10 +38,11 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
 
     // GUI
     Context ctx;
-    SeekBar seekBarPwm;
-    TextView textViewTime, textViewTimeDev, textViewFactory;
+    SeekBar seekBarPwm, seekBarHard;
+    TextView textViewTime, textViewTimeDev, textViewFactory, textViewSoftMin, textViewSoftMax, textViewHard;
     Timer timerApp, timerDev;
     ArrayList<TextView> textViewsTemp = new ArrayList<>();
+    RangeSeekBar rangeSeekBarSoftMode;
 
     // Data
     Date dateDev;
@@ -53,6 +58,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facade_blanket);
         ctx = getApplicationContext();
+        getSupportActionBar().hide();
 
         Intent intent = getIntent();
         device = (BluetoothDevice)intent.getParcelableExtra("device");
@@ -93,6 +99,9 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         textViewTime = (TextView)findViewById(R.id.textViewTime);
         textViewTimeDev = (TextView)findViewById(R.id.textViewTimeDev);
         textViewFactory = (TextView)findViewById(R.id.textViewFactory);
+        textViewSoftMin = (TextView)findViewById(R.id.textViewSoftMin);
+        textViewSoftMax = (TextView)findViewById(R.id.textViewSoftMax);
+        textViewHard = (TextView)findViewById(R.id.textViewHard);
 
         // 7 fields for temperatures <-- temperatures from char
         textViewsTemp.add((TextView) findViewById(R.id.textViewTempBoard));
@@ -102,6 +111,41 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         textViewsTemp.add((TextView) findViewById(R.id.textViewTemp4));
         textViewsTemp.add((TextView) findViewById(R.id.textViewTemp5));
         textViewsTemp.add((TextView) findViewById(R.id.textViewTemp6));
+
+        rangeSeekBarSoftMode = (RangeSeekBar) findViewById(R.id.rsbSoft);
+        rangeSeekBarSoftMode.setRangeValues(0, 24*60);
+        rangeSeekBarSoftMode.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener() {
+            @Override
+            public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Object minValue, Object maxValue) {
+                int value = bar.getSelectedMinValue().intValue();
+                //Log.i("mytag", String.valueOf(value / 60) + " " + String.valueOf(value % 60));
+                textViewSoftMin.setText(String.valueOf(value / 60) + "h:" + String.valueOf(value % 60) + "m");
+                value = bar.getSelectedMaxValue().intValue();
+                //Log.i("mytag", String.valueOf(value / 60) + " " + String.valueOf(value % 60));
+                textViewSoftMax.setText(String.valueOf(value / 60) + "h:" + String.valueOf(value % 60) + "m");
+            }
+        });
+
+        seekBarHard = (SeekBar)findViewById(R.id.seekBarHard);
+        seekBarHard.setMax(24 * 60);
+        seekBarHard.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int value = seekBar.getProgress();
+                textViewHard.setText(String.valueOf(value / 60) + "h:" + String.valueOf(value % 60) + "m");
+            }
+        });
+
 
         // Test time UNIX - OK
 
@@ -280,5 +324,9 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
 
         charTime.setValue(values);
         bleConnector.bleGatt.writeCharacteristic(charTime);
+    }
+
+    public void resetOnClick(View view){
+
     }
 }
