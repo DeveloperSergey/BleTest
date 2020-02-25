@@ -27,6 +27,7 @@ public class BleConnector{
     private BleCallbacks callbacks;
     public BluetoothGatt bleGatt = null;
     private boolean connected = false;
+    private ArrayList<BluetoothGattCharacteristic> sequenceToWrite = new ArrayList<>();
 
     final int STATE_DISCONNECTED = 0;
     final int STATE_CONNECTING = 1;
@@ -126,5 +127,49 @@ public class BleConnector{
     }
     public boolean isConnect(){
         return connected;
+    }
+    public boolean writeChar(final BluetoothGattCharacteristic characteristic){
+
+        //sequenceToWrite.add(characteristic);
+        Thread thread = new Thread(
+        new Runnable(){
+            @Override
+            public void run() {
+
+                for(int tryNum = 0; tryNum < 10; tryNum++) {
+                    if(bleGatt.writeCharacteristic(characteristic)){
+                        Log.i("mytag", "Write success");
+                        break;
+                    }
+                    else{
+                        Log.i("mytag", "Write fail");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+        thread.start();
+
+        return true;
+    }
+    public boolean readChar(final BluetoothGattCharacteristic characteristic){
+
+        Thread thread = new Thread(
+        new Runnable(){
+            @Override
+            public void run() {
+                if(bleGatt.readCharacteristic(characteristic))
+                    Log.i("mytag", "Read success");
+                else
+                    Log.i("mytag", "Read fail");
+            }
+        });
+        thread.start();
+
+        return true;
     }
 }

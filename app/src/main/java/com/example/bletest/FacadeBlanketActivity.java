@@ -3,7 +3,6 @@ package com.example.bletest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
@@ -11,7 +10,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -34,6 +32,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     final String svcFactoryUUID = "0000fff1-0000-1000-8000-00805f9b34fb";
     final String svcTimeUUID = "0000fff2-0000-1000-8000-00805f9b34fb";
     final String svcEnableUUID = "0000fff3-0000-1000-8000-00805f9b34fb";
+    final String svcTemperatureUUID = "0000fff4-0000-1000-8000-00805f9b34fb";
 
     final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
@@ -125,8 +124,10 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
                         (byte) 0,
                         (byte) 0
                 };
+                Log.i("mytag", String.valueOf(values[0]));
                 charEnable.setValue(values);
-                bleConnector.bleGatt.writeCharacteristic(charEnable);
+                bleConnector.writeChar(charEnable);
+                // Add sequence!
             }
         });
 
@@ -165,7 +166,8 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         seekBarHard.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                int value = (seekBar.getProgress() / 30) * 30;
+                textViewHard.setText(String.valueOf(value / 60) + "h:" + String.valueOf(value % 60) + "m");
             }
 
             @Override
@@ -175,8 +177,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                int value = seekBar.getProgress();
-                textViewHard.setText(String.valueOf(value / 60) + "h:" + String.valueOf(value % 60) + "m");
+
             }
         });
 
@@ -223,7 +224,8 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
                 if (!bleConnector.isConnect()) return;
                 BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
                 BluetoothGattCharacteristic charFactory = service.getCharacteristic(UUID.fromString(svcFactoryUUID));
-                bleConnector.bleGatt.readCharacteristic(charFactory);
+                bleConnector.readChar(charFactory);
+                setTimeInDevice();
             }
         });
     }
@@ -245,8 +247,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //Log.i("mytag", "WRITED CALLBACK");
-                Toast.makeText(ctx, "Synchronized", Toast.LENGTH_LONG).show();
+                Log.i("mytag", "WRITED CALLBACK");
             }
         });
     }
@@ -304,7 +305,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     }
 
     public void ledClicked(View view){
-        setTimeInDevice();
+        Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
     }
 
     private void TimerMethodApp() {
@@ -330,7 +331,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         if ( !bleConnector.isConnect() ) return;
         BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
         BluetoothGattCharacteristic charTime = service.getCharacteristic(UUID.fromString(svcTimeUUID));
-        bleConnector.bleGatt.readCharacteristic(charTime);
+        bleConnector.readChar(charTime);
     }
 
     private void setTimeInDevice(){
@@ -357,7 +358,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         values[4] = (byte)lrc;
 
         charTime.setValue(values);
-        bleConnector.bleGatt.writeCharacteristic(charTime);
+        bleConnector.writeChar(charTime);
     }
 
     public void resetOnClick(View view){

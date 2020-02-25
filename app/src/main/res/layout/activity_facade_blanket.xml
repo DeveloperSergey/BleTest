@@ -8,6 +8,7 @@
     tools:context=".FacadeBlanketActivity">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
@@ -84,6 +85,21 @@
                 android:background="@drawable/temperature_background"
                 android:gravity="center_vertical"
                 android:padding="10dp">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:id="@+id/textViewTempTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Temperature"
+                        android:textSize="18sp" />
+                </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -540,6 +556,15 @@
                 </TableRow>
 
             </TableLayout>
+
+            <Button
+                android:id="@+id/buttonReset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:background="@android:color/darker_gray"
+                android:onClick="resetOnClick"
+                android:text="RESET ALL" />
 
         </LinearLayout>
     </ScrollView>

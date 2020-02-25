@@ -27,7 +27,7 @@ public class PowerMode {
             this.seekBarTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                    textViewTime.setText(String.valueOf(seekBar.getProgress()) + "h");
                 }
 
                 @Override
@@ -47,7 +47,7 @@ public class PowerMode {
             this.seekBarVal.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                    textViewVal.setText(String.valueOf(seekBar.getProgress()) + "%");
                 }
 
                 @Override
@@ -62,5 +62,13 @@ public class PowerMode {
                 }
             });
         }
+    }
+
+    int getTime(){
+        return this.seekBarTime.getProgress();
+    }
+
+    int getValue(){
+        return seekBarVal.getProgress();
     }
 }
