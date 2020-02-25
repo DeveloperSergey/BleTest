@@ -27,7 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class FacadeBlanketActivity extends AppCompatActivity implements BleConnector.BleCallbacks {
+public class FacadeBlanketActivity extends AppCompatActivity implements BleConnector.BleCallbacks,
+        PowerMode.PowerModeCallback {
 
     final String svUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
     final String svcFactoryUUID = "0000fff1-0000-1000-8000-00805f9b34fb";
@@ -44,6 +45,13 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     ArrayList<TextView> textViewsTemp = new ArrayList<>();
     RangeSeekBar rangeSeekBarSoftMode;
 
+    SeekBar seekBarPowMod1Time, seekBarPowMod1Val;
+    SeekBar seekBarPowMod2Time, seekBarPowMod2Val;
+    SeekBar seekBarPowMod3Time, seekBarPowMod3Val;
+    TextView textViewPowMod1Time, textViewPowMod1Val;
+    TextView textViewPowMod2Time, textViewPowMod2Val;
+    TextView textViewPowMod3Time, textViewPowMod3Val;
+
     // Data
     Date dateDev;
     int hardware, firmware;
@@ -51,7 +59,12 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     // BLE
     BleConnector bleConnector;
     BluetoothDevice device = null;
+    PowerMode powerMode1, powerMode2, powerMode3;
 
+    @Override
+    public void powerModeChangedCallback() {
+        Log.i("mytag", "POWER MODE CHANGED");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +77,27 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         device = (BluetoothDevice)intent.getParcelableExtra("device");
         bleConnector = new BleConnector(this, device, this);
         bleConnector.connect();
+
+
+
+
+        // Power modes
+        seekBarPowMod1Time = (SeekBar) findViewById(R.id.seekBarPowMod1Time);
+        seekBarPowMod2Time = (SeekBar) findViewById(R.id.seekBarPowMod2Time);
+        seekBarPowMod3Time = (SeekBar) findViewById(R.id.seekBarPowMod3Time);
+        seekBarPowMod1Val = (SeekBar) findViewById(R.id.seekBarPowMod1Val);
+        seekBarPowMod2Val = (SeekBar) findViewById(R.id.seekBarPowMod2Val);
+        seekBarPowMod3Val = (SeekBar) findViewById(R.id.seekBarPowMod3Val);
+        textViewPowMod1Time = (TextView) findViewById(R.id.textViewPowMod1Time);
+        textViewPowMod2Time = (TextView) findViewById(R.id.textViewPowMod2Time);
+        textViewPowMod3Time = (TextView) findViewById(R.id.textViewPowMod3Time);
+        textViewPowMod1Val = (TextView) findViewById(R.id.textViewPowMod1Val);
+        textViewPowMod2Val = (TextView) findViewById(R.id.textViewPowMod2Val);
+        textViewPowMod3Val = (TextView) findViewById(R.id.textViewPowMod3Val);
+        powerMode1 = new PowerMode(this, textViewPowMod1Time, textViewPowMod1Val, seekBarPowMod1Time, seekBarPowMod1Val);
+        powerMode1 = new PowerMode(this, textViewPowMod2Time, textViewPowMod2Val, seekBarPowMod2Time, seekBarPowMod2Val);
+        powerMode1 = new PowerMode(this, textViewPowMod3Time, textViewPowMod3Val, seekBarPowMod3Time, seekBarPowMod3Val);
+
 
         seekBarPwm = (SeekBar)findViewById(R.id.seekBarPwm);
         seekBarPwm = (SeekBar)findViewById(R.id.seekBarPwm);
