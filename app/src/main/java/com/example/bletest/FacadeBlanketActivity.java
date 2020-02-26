@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.Intent;
@@ -222,13 +223,31 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
                 ((ImageView)findViewById(R.id.imageView)).setImageDrawable(ctx.getDrawable(R.drawable.state_green));
 
                 if (!bleConnector.isConnect()) return;
+
+                // Read Factory
                 BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
                 BluetoothGattCharacteristic charFactory = service.getCharacteristic(UUID.fromString(svcFactoryUUID));
                 bleConnector.readChar(charFactory);
                 setTimeInDevice();
+
+                // Enable notification
+                UUID CLIENT_CHARACTERISTIC_CONFIG_UUID = convertFromInteger(0x2902);
+                BluetoothGattCharacteristic charTemperature = service.getCharacteristic(UUID.fromString(svcTemperatureUUID));
+                bleConnector.bleGatt.setCharacteristicNotification(charTemperature, true);
+                BluetoothGattDescriptor descriptor = charTemperature.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID);
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                if(bleConnector.writeDesc(descriptor));
             }
         });
     }
+
+    public UUID convertFromInteger(int i) {
+        final long MSB = 0x0000000000001000L;
+        final long LSB = 0x800000805f9b34fbL;
+        long value = i & 0xFFFFFFFF;
+        return new UUID(MSB | (value << 32), LSB);
+    }
+
 
     @Override
     public void disconnectedCallback() {
@@ -289,6 +308,24 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
                     }
                 });
             }
+        }
+    }
+
+    @Override
+    public void notificationCallback(final BluetoothGattCharacteristic characteristic) {
+
+        UUID uuid = characteristic.getUuid();
+        if (uuid.toString().equals(svcTemperatureUUID)) {
+            //final int tempBoard = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_SINT8, 0);
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    for(int i = 0; i < 7; i++) {
+                        int temp = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_SINT8, i);
+                        textViewsTemp.get(i).setText(String.valueOf(temp) + "\u00B0 C");
+                    }
+                }
+            });
         }
     }
 

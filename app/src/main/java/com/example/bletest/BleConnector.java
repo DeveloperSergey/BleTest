@@ -20,6 +20,7 @@ public class BleConnector{
         void disconnectedCallback();
         void writedCharCallback();
         void readedCharCallback(BluetoothGattCharacteristic characteristic);
+        void notificationCallback(BluetoothGattCharacteristic characteristic);
     }
 
     private Context context;
@@ -105,6 +106,8 @@ public class BleConnector{
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
+            Log.i("mytag", "RECEIVED NOTI");
+            callbacks.notificationCallback(characteristic);
         }
 
         @Override
@@ -168,6 +171,32 @@ public class BleConnector{
                     Log.i("mytag", "Read fail");
             }
         });
+        thread.start();
+
+        return true;
+    }
+    public boolean writeDesc(final BluetoothGattDescriptor descriptor){
+        Thread thread = new Thread(
+                new Runnable(){
+                    @Override
+                    public void run() {
+
+                        for(int tryNum = 0; tryNum < 10; tryNum++) {
+                            if(bleGatt.writeDescriptor(descriptor)){
+                                Log.i("mytag", "Write desc success");
+                                break;
+                            }
+                            else{
+                                Log.i("mytag", "Write desc fail");
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                });
         thread.start();
 
         return true;

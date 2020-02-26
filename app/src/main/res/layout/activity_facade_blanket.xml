@@ -73,11 +73,30 @@
                     android:textSize="24sp" />
             </LinearLayout>
 
-            <SeekBar
-                android:id="@+id/seekBarPwm"
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp" />
+                android:layout_height="match_parent"
+                android:background="@drawable/temperature_background"
+                android:gravity="center_vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Power"
+                    android:textSize="18sp" />
+
+                <SeekBar
+                    android:id="@+id/seekBarPwm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp" />
+            </TableRow>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -252,7 +271,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                android:layout_height="10dp" />
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -453,7 +472,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                android:layout_height="10dp" />
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -557,14 +576,9 @@
 
             </TableLayout>
 
-            <Button
-                android:id="@+id/buttonReset"
+            <Space
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:background="@android:color/darker_gray"
-                android:onClick="resetOnClick"
-                android:text="RESET ALL" />
+                android:layout_height="20dp" />
 
         </LinearLayout>
     </ScrollView>
