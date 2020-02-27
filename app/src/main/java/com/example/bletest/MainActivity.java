@@ -99,10 +99,13 @@ public class MainActivity extends AppCompatActivity {
                     BluetoothDevice device = devices.get(position);
                     Log.i("mytag", device.getName() + device.getAddress());
 
-                    //Intent intent = new Intent(ctx, DeviceActivity.class);
-                    Intent intent = new Intent(ctx, FacadeBlanketActivity.class);
+                    DialogChooseFacade dialog = new DialogChooseFacade();
+                    dialog.setDevice(device);
+                    dialog.show(getSupportFragmentManager(), "dialog");
+
+                    /*Intent intent = new Intent(ctx, FacadeBlanketActivity.class);
                     intent.putExtra("device", device);
-                    startActivity(intent);
+                    startActivity(intent);*/
                 }
             }
         });
