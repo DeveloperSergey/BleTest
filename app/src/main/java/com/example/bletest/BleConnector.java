@@ -23,6 +23,7 @@ public class BleConnector{
         void notificationCallback(BluetoothGattCharacteristic characteristic);
     }
 
+    private final int TRY_NUM = 10;
     private Context context;
     private BluetoothDevice device = null;
     private BleCallbacks callbacks;
@@ -106,7 +107,7 @@ public class BleConnector{
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            Log.i("mytag", "RECEIVED NOTI");
+            //Log.i("mytag", "RECEIVED NOTI");
             callbacks.notificationCallback(characteristic);
         }
 
@@ -139,7 +140,7 @@ public class BleConnector{
             @Override
             public void run() {
 
-                for(int tryNum = 0; tryNum < 10; tryNum++) {
+                for(int tryNum = 0; tryNum < TRY_NUM; tryNum++) {
                     if(bleGatt.writeCharacteristic(characteristic)){
                         Log.i("mytag", "Write success");
                         break;
@@ -165,10 +166,20 @@ public class BleConnector{
         new Runnable(){
             @Override
             public void run() {
-                if(bleGatt.readCharacteristic(characteristic))
-                    Log.i("mytag", "Read success");
-                else
-                    Log.i("mytag", "Read fail");
+                for(int tryNum = 0; tryNum < TRY_NUM; tryNum++) {
+                    if(bleGatt.readCharacteristic(characteristic)){
+                        Log.i("mytag", "Read success");
+                        break;
+                    }
+                    else{
+                        Log.i("mytag", "Read fail");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         });
         thread.start();
@@ -181,7 +192,7 @@ public class BleConnector{
                     @Override
                     public void run() {
 
-                        for(int tryNum = 0; tryNum < 10; tryNum++) {
+                        for(int tryNum = 0; tryNum < TRY_NUM; tryNum++) {
                             if(bleGatt.writeDescriptor(descriptor)){
                                 Log.i("mytag", "Write desc success");
                                 break;

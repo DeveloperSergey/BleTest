@@ -16,7 +16,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.florescu.android.rangeseekbar.RangeSeekBar;
+import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
+import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarFinalValueListener;
+import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     final String svcTimeUUID = "0000fff2-0000-1000-8000-00805f9b34fb";
     final String svcEnableUUID = "0000fff3-0000-1000-8000-00805f9b34fb";
     final String svcTemperatureUUID = "0000fff4-0000-1000-8000-00805f9b34fb";
+    final String svcPowerUUID = "0000fff5-0000-1000-8000-00805f9b34fb";
 
     final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
@@ -43,7 +46,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     TextView textViewTime, textViewTimeDev, textViewFactory, textViewSoftMin, textViewSoftMax, textViewHard;
     Timer timerApp, timerDev;
     ArrayList<TextView> textViewsTemp = new ArrayList<>();
-    RangeSeekBar rangeSeekBarSoftMode;
+    CrystalRangeSeekbar rangeSeekBarSoftMode;
 
     SeekBar seekBarPowMod1Time, seekBarPowMod1Val;
     SeekBar seekBarPowMod2Time, seekBarPowMod2Val;
@@ -59,10 +62,10 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     // BLE
     BleConnector bleConnector;
     BluetoothDevice device = null;
-    PowerMode powerMode1, powerMode2, powerMode3;
+    PowerMode powerMode1, powerMode2, powerMode3, powerModeHard;
 
     @Override
-    public void powerModeChangedCallback() {
+    public void powerModeChangedCallback(int id) {
         Log.i("mytag", "POWER MODE CHANGED");
     }
 
@@ -79,24 +82,29 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         bleConnector.connect();
 
 
-
-
         // Power modes
         seekBarPowMod1Time = (SeekBar) findViewById(R.id.seekBarPowMod1Time);
+        seekBarPowMod1Time.setMax(10*60);
         seekBarPowMod2Time = (SeekBar) findViewById(R.id.seekBarPowMod2Time);
+        seekBarPowMod2Time.setMax(10*60);
         seekBarPowMod3Time = (SeekBar) findViewById(R.id.seekBarPowMod3Time);
+        seekBarPowMod3Time.setMax(10*60);
+        seekBarHard = (SeekBar)findViewById(R.id.seekBarHard);
+        seekBarHard.setMax(24*60);
         seekBarPowMod1Val = (SeekBar) findViewById(R.id.seekBarPowMod1Val);
         seekBarPowMod2Val = (SeekBar) findViewById(R.id.seekBarPowMod2Val);
         seekBarPowMod3Val = (SeekBar) findViewById(R.id.seekBarPowMod3Val);
         textViewPowMod1Time = (TextView) findViewById(R.id.textViewPowMod1Time);
         textViewPowMod2Time = (TextView) findViewById(R.id.textViewPowMod2Time);
         textViewPowMod3Time = (TextView) findViewById(R.id.textViewPowMod3Time);
+        textViewHard = (TextView)findViewById(R.id.textViewHard);
         textViewPowMod1Val = (TextView) findViewById(R.id.textViewPowMod1Val);
         textViewPowMod2Val = (TextView) findViewById(R.id.textViewPowMod2Val);
         textViewPowMod3Val = (TextView) findViewById(R.id.textViewPowMod3Val);
-        powerMode1 = new PowerMode(this, textViewPowMod1Time, textViewPowMod1Val, seekBarPowMod1Time, seekBarPowMod1Val);
-        powerMode1 = new PowerMode(this, textViewPowMod2Time, textViewPowMod2Val, seekBarPowMod2Time, seekBarPowMod2Val);
-        powerMode1 = new PowerMode(this, textViewPowMod3Time, textViewPowMod3Val, seekBarPowMod3Time, seekBarPowMod3Val);
+        powerMode1 = new PowerMode(1,this, textViewPowMod1Time, textViewPowMod1Val, seekBarPowMod1Time, seekBarPowMod1Val);
+        powerMode2 = new PowerMode(2,this, textViewPowMod2Time, textViewPowMod2Val, seekBarPowMod2Time, seekBarPowMod2Val);
+        powerMode3 = new PowerMode(3,this, textViewPowMod3Time, textViewPowMod3Val, seekBarPowMod3Time, seekBarPowMod3Val);
+        powerModeHard = new PowerMode(4, this, textViewHard, null, seekBarHard, null);
 
 
         seekBarPwm = (SeekBar)findViewById(R.id.seekBarPwm);
@@ -137,7 +145,6 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         textViewFactory = (TextView)findViewById(R.id.textViewFactory);
         textViewSoftMin = (TextView)findViewById(R.id.textViewSoftMin);
         textViewSoftMax = (TextView)findViewById(R.id.textViewSoftMax);
-        textViewHard = (TextView)findViewById(R.id.textViewHard);
 
         // 7 fields for temperatures <-- temperatures from char
         textViewsTemp.add((TextView) findViewById(R.id.textViewTempBoard));
@@ -148,39 +155,25 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         textViewsTemp.add((TextView) findViewById(R.id.textViewTemp5));
         textViewsTemp.add((TextView) findViewById(R.id.textViewTemp6));
 
-        rangeSeekBarSoftMode = (RangeSeekBar) findViewById(R.id.rsbSoft);
-        rangeSeekBarSoftMode.setRangeValues(0, 24*60);
-        rangeSeekBarSoftMode.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener() {
+        rangeSeekBarSoftMode = (CrystalRangeSeekbar)findViewById(R.id.rangeSeekbar);
+        rangeSeekBarSoftMode.setMaxValue(24*60);
+        rangeSeekBarSoftMode.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
             @Override
-            public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Object minValue, Object maxValue) {
-                int value = bar.getSelectedMinValue().intValue();
-                //Log.i("mytag", String.valueOf(value / 60) + " " + String.valueOf(value % 60));
-                textViewSoftMin.setText(String.valueOf(value / 60) + "h:" + String.valueOf(value % 60) + "m");
-                value = bar.getSelectedMaxValue().intValue();
-                //Log.i("mytag", String.valueOf(value / 60) + " " + String.valueOf(value % 60));
-                textViewSoftMax.setText(String.valueOf(value / 60) + "h:" + String.valueOf(value % 60) + "m");
+            public void valueChanged(Number minValue, Number maxValue) {
+                textViewSoftMin.setText(String.valueOf(minValue.intValue() / 60) + ":" +
+                        String.valueOf(minValue.intValue() % 60));
+                textViewSoftMax.setText(String.valueOf(maxValue.intValue() / 60) + ":" +
+                        String.valueOf(maxValue.intValue() % 60));
             }
         });
 
-        seekBarHard = (SeekBar)findViewById(R.id.seekBarHard);
-        seekBarHard.setMax(24 * 60);
-        seekBarHard.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        rangeSeekBarSoftMode.setOnRangeSeekbarFinalValueListener(new OnRangeSeekbarFinalValueListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int value = (seekBar.getProgress() / 30) * 30;
-                textViewHard.setText(String.valueOf(value / 60) + "h:" + String.valueOf(value % 60) + "m");
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void finalValue(Number minValue, Number maxValue) {
 
             }
         });
+
 
 
         // Test time UNIX - OK
@@ -205,13 +198,13 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
             }
         }, 0, 1000);
 
-        timerDev = new Timer();
+        /*timerDev = new Timer();
         timerDev.schedule(new TimerTask() {
             @Override
             public void run() {
                 TimerMethodDev();
             }
-        }, 0, 3000);
+        }, 0, 3000);*/
     }
 
     @Override
@@ -229,12 +222,20 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
                 BluetoothGattCharacteristic charFactory = service.getCharacteristic(UUID.fromString(svcFactoryUUID));
                 bleConnector.readChar(charFactory);
                 setTimeInDevice();
+                getPowerSettings();
 
                 // Enable notification
                 UUID CLIENT_CHARACTERISTIC_CONFIG_UUID = convertFromInteger(0x2902);
                 BluetoothGattCharacteristic charTemperature = service.getCharacteristic(UUID.fromString(svcTemperatureUUID));
                 bleConnector.bleGatt.setCharacteristicNotification(charTemperature, true);
                 BluetoothGattDescriptor descriptor = charTemperature.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID);
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                if(bleConnector.writeDesc(descriptor));
+
+                // Enable notification
+                BluetoothGattCharacteristic charTime = service.getCharacteristic(UUID.fromString(svcTimeUUID));
+                bleConnector.bleGatt.setCharacteristicNotification(charTime, true);
+                descriptor = charTime.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID);
                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                 if(bleConnector.writeDesc(descriptor));
             }
@@ -309,6 +310,41 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
                 });
             }
         }
+        else if(uuid.toString().equals(svcPowerUUID)){
+            final int time1 = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 0);
+            final int power1 = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 2);
+            final int time2 = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 3);
+            final int power2 = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 5);
+            final int time3 = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 6);
+            final int power3 = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 8);
+            final int timeHardStart = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 9);
+            final int timeSoftStart = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 11);
+            final int timeSoftStop = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 13);
+
+            Log.i("mytag", String.valueOf(time1));
+            Log.i("mytag", String.valueOf(power1));
+            Log.i("mytag", String.valueOf(time2));
+            Log.i("mytag", String.valueOf(power2));
+            Log.i("mytag", String.valueOf(time3));
+            Log.i("mytag", String.valueOf(power3));
+            Log.i("mytag", String.valueOf(timeHardStart));
+            Log.i("mytag", String.valueOf(timeSoftStart));
+            Log.i("mytag", String.valueOf(timeSoftStop));
+
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    powerMode1.setTime(time1);
+                    powerMode1.setValue(power1);
+                    powerMode2.setTime(time2);
+                    powerMode2.setValue(power2);
+                    powerMode3.setTime(time3);
+                    powerMode3.setValue(power3);
+                    powerModeHard.setTime(timeHardStart);
+                    rangeSeekBarSoftMode.setMinStartValue(timeSoftStart).setMaxStartValue(timeSoftStop).apply();
+                }
+            });
+        }
     }
 
     @Override
@@ -316,6 +352,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
 
         UUID uuid = characteristic.getUuid();
         if (uuid.toString().equals(svcTemperatureUUID)) {
+            //Log.i("mytag", "TEMP CALLBACK");
             //final int tempBoard = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_SINT8, 0);
             this.runOnUiThread(new Runnable() {
                 @Override
@@ -327,6 +364,30 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
                 }
             });
         }
+        else if(uuid.toString().equals(svcTimeUUID)) {
+            //Log.i("mytag", "TIME CALLBACK");
+            long value = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT32, 0);
+            int lrc = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 4);
+
+            int lrcSum = 0;
+            for (byte b : characteristic.getValue())
+                lrcSum = (byte) (lrcSum + b);
+
+            //Log.i("mytag", String.valueOf(value) );
+            //Log.i("mytag", String.valueOf(lrc) );
+            //Log.i("mytag", String.valueOf(lrcSum) );
+
+            if (lrcSum == 0) {
+                dateDev = new Date(value * 1000);
+                this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        textViewTimeDev.setText(dateFormat.format(dateDev));
+                    }
+                });
+            }
+        }
+        else Log.i("mytag", "UNKNOW CALLBACK");
     }
 
     @Override
@@ -396,6 +457,13 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
 
         charTime.setValue(values);
         bleConnector.writeChar(charTime);
+    }
+
+    private void getPowerSettings(){
+        if ( !bleConnector.isConnect() ) return;
+        BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+        BluetoothGattCharacteristic charPower = service.getCharacteristic(UUID.fromString(svcPowerUUID));
+        bleConnector.readChar(charPower);
     }
 
     public void resetOnClick(View view){
