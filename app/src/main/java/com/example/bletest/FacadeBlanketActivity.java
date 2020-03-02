@@ -63,10 +63,49 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     BleConnector bleConnector;
     BluetoothDevice device = null;
     PowerMode powerMode1, powerMode2, powerMode3, powerModeHard;
+    ArrayList<PowerMode> powerModes = new ArrayList<>();
 
     @Override
     public void powerModeChangedCallback(int id) {
         Log.i("mytag", "POWER MODE CHANGED");
+        if ( !bleConnector.isConnect() ) return;
+        BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+        BluetoothGattCharacteristic charPower = service.getCharacteristic(UUID.fromString(svcPowerUUID));
+
+        byte[] values = new byte[16];
+        for(int index = 0; index < powerModes.size(); index++) {
+            PowerMode powerMode = powerModes.get(index);
+            int time = powerMode.getTime();
+            int value = powerMode.getValue();
+            values[index * 3] = (byte)(time & 0xFF);
+            values[(index * 3) + 1] = (byte)((time >> 8) & 0xFF);
+            values[(index * 3) + 2] = (byte)(value & 0xFF);
+        }
+
+        int timeHard = seekBarHard.getProgress();
+        values[9] = (byte)(timeHard & 0xFF);
+        values[10] = (byte)((timeHard >> 8) & 0xFF);
+
+        int timeSoftStart = rangeSeekBarSoftMode.getSelectedMinValue().intValue();
+        values[11] = (byte)(timeSoftStart & 0xFF);
+        values[12] = (byte)((timeSoftStart >> 8) & 0xFF);
+
+        int timeSoftStop = rangeSeekBarSoftMode.getSelectedMaxValue().intValue();
+        values[13] = (byte)(timeSoftStop & 0xFF);
+        values[14] = (byte)((timeSoftStop >> 8) & 0xFF);
+
+        values[15] = 0;
+
+
+        int lrc = 0;
+        for(byte b : values){
+            lrc = (byte)(lrc + b);
+        }
+        lrc = (255 - lrc) + 1;
+        values[15] = (byte)lrc;
+        charPower.setValue(values);
+
+        bleConnector.writeChar(charPower);
     }
 
     @Override
@@ -101,11 +140,14 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         textViewPowMod1Val = (TextView) findViewById(R.id.textViewPowMod1Val);
         textViewPowMod2Val = (TextView) findViewById(R.id.textViewPowMod2Val);
         textViewPowMod3Val = (TextView) findViewById(R.id.textViewPowMod3Val);
-        powerMode1 = new PowerMode(1,this, textViewPowMod1Time, textViewPowMod1Val, seekBarPowMod1Time, seekBarPowMod1Val);
-        powerMode2 = new PowerMode(2,this, textViewPowMod2Time, textViewPowMod2Val, seekBarPowMod2Time, seekBarPowMod2Val);
-        powerMode3 = new PowerMode(3,this, textViewPowMod3Time, textViewPowMod3Val, seekBarPowMod3Time, seekBarPowMod3Val);
-        powerModeHard = new PowerMode(4, this, textViewHard, null, seekBarHard, null);
+        powerMode1 = new PowerMode(0,this, textViewPowMod1Time, textViewPowMod1Val, seekBarPowMod1Time,seekBarPowMod1Val);
+        powerMode2 = new PowerMode(1,this, textViewPowMod2Time, textViewPowMod2Val, seekBarPowMod2Time, seekBarPowMod2Val);
+        powerMode3 = new PowerMode(2,this, textViewPowMod3Time, textViewPowMod3Val, seekBarPowMod3Time, seekBarPowMod3Val);
+        powerModeHard = new PowerMode(3, this, textViewHard, null, seekBarHard, null);
 
+        powerModes.add(powerMode1);
+        powerModes.add(powerMode2);
+        powerModes.add(powerMode3);
 
         seekBarPwm = (SeekBar)findViewById(R.id.seekBarPwm);
         seekBarPwm = (SeekBar)findViewById(R.id.seekBarPwm);
@@ -170,7 +212,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         rangeSeekBarSoftMode.setOnRangeSeekbarFinalValueListener(new OnRangeSeekbarFinalValueListener() {
             @Override
             public void finalValue(Number minValue, Number maxValue) {
-
+                powerModeChangedCallback(4);
             }
         });
 
@@ -321,7 +363,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
             final int timeSoftStart = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 11);
             final int timeSoftStop = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 13);
 
-            Log.i("mytag", String.valueOf(time1));
+            /*Log.i("mytag", String.valueOf(time1));
             Log.i("mytag", String.valueOf(power1));
             Log.i("mytag", String.valueOf(time2));
             Log.i("mytag", String.valueOf(power2));
@@ -329,7 +371,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
             Log.i("mytag", String.valueOf(power3));
             Log.i("mytag", String.valueOf(timeHardStart));
             Log.i("mytag", String.valueOf(timeSoftStart));
-            Log.i("mytag", String.valueOf(timeSoftStop));
+            Log.i("mytag", String.valueOf(timeSoftStop));*/
 
             this.runOnUiThread(new Runnable() {
                 @Override
