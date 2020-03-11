@@ -21,6 +21,7 @@
         rsb:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
+            android:id="@+id/mainLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -89,9 +90,16 @@
 
                 <SeekBar
                     android:id="@+id/seekBarPwm"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp" />
+                    android:layout_margin="10dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/textViewPwm"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:text="0%" />
             </TableRow>
 
             <Space
@@ -474,119 +482,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <TableLayout
+            <LinearLayout
+                android:id="@+id/layoutTimers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/temperature_background"
-                android:gravity="center_vertical"
-                android:padding="10dp">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textView10"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Hard mode"
-                        android:textSize="18sp" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textViewHard"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="00h:00m" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <SeekBar
-                        android:id="@+id/seekBarHard"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-                </TableRow>
-
-            </TableLayout>
+                android:orientation="vertical"></LinearLayout>
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/temperature_background"
-                android:gravity="center_vertical"
-                android:padding="10dp">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Soft mode"
-                        android:textSize="18sp" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textViewSoftMin"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="00h:00m" />
-
-                    <TextView
-                        android:id="@+id/textViewSoftMax"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="00h:00m" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
-                        android:id="@+id/rangeSeekbar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:corner_radius="10"
-                        app:gap="1"
-                        app:bar_highlight_color="#cd071e"
-                        app:left_thumb_color="#d10000"
-                        app:right_thumb_color="#d10000"
-                        app:left_thumb_color_pressed="#d10000"
-                        app:right_thumb_color_pressed="#d10000"
-                        app:data_type="_integer"/>
-                </TableRow>
-
-            </TableLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="20dp" />
 
         </LinearLayout>
     </ScrollView>

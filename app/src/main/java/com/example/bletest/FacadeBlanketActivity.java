@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,8 +43,9 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
 
     // GUI
     Context ctx;
+    LinearLayout layoutTimers;
     SeekBar seekBarPwm, seekBarHard;
-    TextView textViewTime, textViewTimeDev, textViewFactory, textViewSoftMin, textViewSoftMax, textViewHard;
+    TextView textViewTime, textViewTimeDev, textViewFactory, textViewPwm;
     Timer timerApp, timerDev;
     ArrayList<TextView> textViewsTemp = new ArrayList<>();
     CrystalRangeSeekbar rangeSeekBarSoftMode;
@@ -82,17 +84,17 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
             values[(index * 3) + 2] = (byte)(value & 0xFF);
         }
 
-        int timeHard = seekBarHard.getProgress();
-        values[9] = (byte)(timeHard & 0xFF);
-        values[10] = (byte)((timeHard >> 8) & 0xFF);
+        //int timeHard = seekBarHard.getProgress();
+        //values[9] = (byte)(timeHard & 0xFF);
+        //values[10] = (byte)((timeHard >> 8) & 0xFF);
 
-        int timeSoftStart = rangeSeekBarSoftMode.getSelectedMinValue().intValue();
-        values[11] = (byte)(timeSoftStart & 0xFF);
-        values[12] = (byte)((timeSoftStart >> 8) & 0xFF);
+        //int timeSoftStart = rangeSeekBarSoftMode.getSelectedMinValue().intValue();
+        //values[11] = (byte)(timeSoftStart & 0xFF);
+        //values[12] = (byte)((timeSoftStart >> 8) & 0xFF);
 
-        int timeSoftStop = rangeSeekBarSoftMode.getSelectedMaxValue().intValue();
-        values[13] = (byte)(timeSoftStop & 0xFF);
-        values[14] = (byte)((timeSoftStop >> 8) & 0xFF);
+        //int timeSoftStop = rangeSeekBarSoftMode.getSelectedMaxValue().intValue();
+        //values[13] = (byte)(timeSoftStop & 0xFF);
+        //values[14] = (byte)((timeSoftStop >> 8) & 0xFF);
 
         values[15] = 0;
 
@@ -121,6 +123,12 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         bleConnector.connect();
 
 
+        // Timers
+        layoutTimers = (LinearLayout)findViewById(R.id.layoutTimers);
+        TextView textView = new TextView(this);
+        textView.setText("hello");
+        layoutTimers.addView(textView);
+
         // Power modes
         seekBarPowMod1Time = (SeekBar) findViewById(R.id.seekBarPowMod1Time);
         seekBarPowMod1Time.setMax(10*60);
@@ -128,33 +136,30 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         seekBarPowMod2Time.setMax(10*60);
         seekBarPowMod3Time = (SeekBar) findViewById(R.id.seekBarPowMod3Time);
         seekBarPowMod3Time.setMax(10*60);
-        seekBarHard = (SeekBar)findViewById(R.id.seekBarHard);
-        seekBarHard.setMax(24*60);
         seekBarPowMod1Val = (SeekBar) findViewById(R.id.seekBarPowMod1Val);
         seekBarPowMod2Val = (SeekBar) findViewById(R.id.seekBarPowMod2Val);
         seekBarPowMod3Val = (SeekBar) findViewById(R.id.seekBarPowMod3Val);
         textViewPowMod1Time = (TextView) findViewById(R.id.textViewPowMod1Time);
         textViewPowMod2Time = (TextView) findViewById(R.id.textViewPowMod2Time);
         textViewPowMod3Time = (TextView) findViewById(R.id.textViewPowMod3Time);
-        textViewHard = (TextView)findViewById(R.id.textViewHard);
         textViewPowMod1Val = (TextView) findViewById(R.id.textViewPowMod1Val);
         textViewPowMod2Val = (TextView) findViewById(R.id.textViewPowMod2Val);
         textViewPowMod3Val = (TextView) findViewById(R.id.textViewPowMod3Val);
         powerMode1 = new PowerMode(0,this, textViewPowMod1Time, textViewPowMod1Val, seekBarPowMod1Time,seekBarPowMod1Val);
         powerMode2 = new PowerMode(1,this, textViewPowMod2Time, textViewPowMod2Val, seekBarPowMod2Time, seekBarPowMod2Val);
         powerMode3 = new PowerMode(2,this, textViewPowMod3Time, textViewPowMod3Val, seekBarPowMod3Time, seekBarPowMod3Val);
-        powerModeHard = new PowerMode(3, this, textViewHard, null, seekBarHard, null);
 
         powerModes.add(powerMode1);
         powerModes.add(powerMode2);
         powerModes.add(powerMode3);
 
+        textViewPwm = (TextView)findViewById(R.id.textViewPwm);
         seekBarPwm = (SeekBar)findViewById(R.id.seekBarPwm);
         seekBarPwm = (SeekBar)findViewById(R.id.seekBarPwm);
         seekBarPwm.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                textViewPwm.setText(String.valueOf(seekBar.getProgress()) + "%");
             }
 
             @Override
@@ -185,8 +190,6 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         textViewTime = (TextView)findViewById(R.id.textViewTime);
         textViewTimeDev = (TextView)findViewById(R.id.textViewTimeDev);
         textViewFactory = (TextView)findViewById(R.id.textViewFactory);
-        textViewSoftMin = (TextView)findViewById(R.id.textViewSoftMin);
-        textViewSoftMax = (TextView)findViewById(R.id.textViewSoftMax);
 
         // 7 fields for temperatures <-- temperatures from char
         textViewsTemp.add((TextView) findViewById(R.id.textViewTempBoard));
@@ -197,7 +200,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         textViewsTemp.add((TextView) findViewById(R.id.textViewTemp5));
         textViewsTemp.add((TextView) findViewById(R.id.textViewTemp6));
 
-        rangeSeekBarSoftMode = (CrystalRangeSeekbar)findViewById(R.id.rangeSeekbar);
+        /*rangeSeekBarSoftMode = (CrystalRangeSeekbar)findViewById(R.id.rangeSeekbar);
         rangeSeekBarSoftMode.setMaxValue(24*60);
         rangeSeekBarSoftMode.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
             @Override
@@ -214,7 +217,7 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
             public void finalValue(Number minValue, Number maxValue) {
                 powerModeChangedCallback(4);
             }
-        });
+        });*/
 
 
 
@@ -382,8 +385,8 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
                     powerMode2.setValue(power2);
                     powerMode3.setTime(time3);
                     powerMode3.setValue(power3);
-                    powerModeHard.setTime(timeHardStart);
-                    rangeSeekBarSoftMode.setMinStartValue(timeSoftStart).setMaxStartValue(timeSoftStop).apply();
+                    //powerModeHard.setTime(timeHardStart);
+                    //rangeSeekBarSoftMode.setMinStartValue(timeSoftStart).setMaxStartValue(timeSoftStop).apply();
                 }
             });
         }
