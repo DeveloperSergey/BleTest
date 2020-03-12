@@ -13,10 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".ActivityBlanketTimers"
-            android:label="@string/title_activity_blanket_timers"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".ActivityCreateTimer"></activity>
         <activity android:name=".ActivityFacadeBlanket" />
         <activity android:name=".ActivityFacadeDevice" />
         <activity

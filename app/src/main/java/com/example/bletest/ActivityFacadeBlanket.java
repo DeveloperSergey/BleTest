@@ -124,6 +124,8 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         bleConnector.connect();
 
         timerManager = new TimerManager(this.getApplicationContext());
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.layoutTimers);
+        timerManager.setParentLayout(linearLayout);
 
         // Power modes
         seekBarPowMod1Time = (SeekBar) findViewById(R.id.seekBarPowMod1Time);
@@ -516,7 +518,9 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         intent.putExtra("device", device);
         startActivity(intent);*/
         // Add new timer
-        timerManager.addTimer();
+        //timerManager.addTimer();
+        Intent intent = new Intent(getApplicationContext(), ActivityCreateTimer.class);
+        startActivity(intent);
     }
 
     public void startOnClick(View view){
