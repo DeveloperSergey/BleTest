@@ -17,8 +17,8 @@
             android:name=".ActivityBlanketTimers"
             android:label="@string/title_activity_blanket_timers"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".FacadeBlanketActivity" />
-        <activity android:name=".DeviceActivity" />
+        <activity android:name=".ActivityFacadeBlanket" />
+        <activity android:name=".ActivityFacadeDevice" />
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan">

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FacadeBlanketActivity">
+    tools:context=".ActivityFacadeBlanket">
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -501,8 +501,17 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="timersOnClick"
-                    android:text="TIMERS" />
+                    android:text="ADD TIMER" />
             </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"></LinearLayout>
 
             <Space
                 android:layout_width="match_parent"

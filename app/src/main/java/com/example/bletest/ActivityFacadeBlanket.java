@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class FacadeBlanketActivity extends AppCompatActivity implements BleConnector.BleCallbacks,
+public class ActivityFacadeBlanket extends AppCompatActivity implements BleConnector.BleCallbacks,
         PowerMode.PowerModeCallback {
 
     final String svUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
@@ -59,6 +59,8 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     // Data
     Date dateDev;
     int hardware, firmware;
+
+    TimerManager timerManager;
 
     // BLE
     BleConnector bleConnector;
@@ -120,6 +122,8 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         device = (BluetoothDevice)intent.getParcelableExtra("device");
         bleConnector = new BleConnector(this, device, this);
         bleConnector.connect();
+
+        timerManager = new TimerManager(this.getApplicationContext());
 
         // Power modes
         seekBarPowMod1Time = (SeekBar) findViewById(R.id.seekBarPowMod1Time);
@@ -508,9 +512,11 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     }
 
     public void timersOnClick(View view){
-        Intent intent = new Intent(ctx, ActivityBlanketTimers.class);
+        /*Intent intent = new Intent(ctx, ActivityBlanketTimers.class);
         intent.putExtra("device", device);
-        startActivity(intent);
+        startActivity(intent);*/
+        // Add new timer
+        timerManager.addTimer();
     }
 
     public void startOnClick(View view){

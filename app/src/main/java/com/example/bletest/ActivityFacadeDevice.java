@@ -14,11 +14,12 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DeviceActivity extends AppCompatActivity implements BleConnector.BleCallbacks {
+public class ActivityFacadeDevice extends AppCompatActivity implements BleConnector.BleCallbacks {
 
     BleConnector bleConnector;
     SimpleExpandableListAdapter adapter;
@@ -98,11 +99,14 @@ public class DeviceActivity extends AppCompatActivity implements BleConnector.Bl
 
             сhildDataList.add(сhildDataItemList);
         }
-        adapter.notifyDataSetChanged();
 
-        // Not work
-        expandableListView.invalidateViews();
-        expandableListView.refreshDrawableState();
+
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
