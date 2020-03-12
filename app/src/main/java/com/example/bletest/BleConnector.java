@@ -127,7 +127,8 @@ public class BleConnector{
         bleGatt = device.connectGatt(context, false, gattCallback);
     }
     public void disconnect(){
-        bleGatt.disconnect();
+        /*if(bleGatt != null)
+            bleGatt.disconnect();*/
     }
     public boolean isConnect(){
         return connected;

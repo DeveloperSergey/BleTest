@@ -43,7 +43,6 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
 
     // GUI
     Context ctx;
-    LinearLayout layoutTimers;
     SeekBar seekBarPwm, seekBarHard;
     TextView textViewTime, textViewTimeDev, textViewFactory, textViewPwm;
     Timer timerApp, timerDev;
@@ -121,13 +120,6 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
         device = (BluetoothDevice)intent.getParcelableExtra("device");
         bleConnector = new BleConnector(this, device, this);
         bleConnector.connect();
-
-
-        // Timers
-        layoutTimers = (LinearLayout)findViewById(R.id.layoutTimers);
-        TextView textView = new TextView(this);
-        textView.setText("hello");
-        layoutTimers.addView(textView);
 
         // Power modes
         seekBarPowMod1Time = (SeekBar) findViewById(R.id.seekBarPowMod1Time);
@@ -514,4 +506,15 @@ public class FacadeBlanketActivity extends AppCompatActivity implements BleConne
     public void resetOnClick(View view){
 
     }
+
+    public void timersOnClick(View view){
+        Intent intent = new Intent(ctx, ActivityBlanketTimers.class);
+        intent.putExtra("device", device);
+        startActivity(intent);
+    }
+
+    public void startOnClick(View view){
+        Log.i("mytag", "STARTER");
+    }
+
 }

@@ -483,10 +483,26 @@
                 android:layout_height="10dp" />
 
             <LinearLayout
-                android:id="@+id/layoutTimers"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"></LinearLayout>
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/buttonStart"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="startOnClick"
+                    android:text="START" />
+
+                <Button
+                    android:id="@+id/buttonTimers"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="timersOnClick"
+                    android:text="TIMERS" />
+            </LinearLayout>
 
             <Space
                 android:layout_width="match_parent"

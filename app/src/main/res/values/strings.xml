@@ -3,9 +3,9 @@
     <string name="textViewFactory" />
     <string name="textViewTime" />
 
-    <string-array
-        name="test_array">
+    <string-array name="test_array">
         <item>DeviceFacade</item>
         <item>BlanketFacade</item>
     </string-array>
+    <string name="title_activity_blanket_timers">ActivityBlanketTimers</string>
 </resources>
