@@ -1,5 +1,6 @@
 package com.example.bletest;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothDevice;
@@ -39,14 +40,19 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     final String svcTemperatureUUID = "0000fff4-0000-1000-8000-00805f9b34fb";
     final String svcPowerUUID = "0000fff5-0000-1000-8000-00805f9b34fb";
 
+    final int REQUEST_ADD_TIMER = 101;
+
     final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     // GUI
     Context ctx;
-    SeekBar seekBarPwm, seekBarHard;
+    SeekBar seekBarPwm;
+    //SeekBar seekBarHard;
     TextView textViewTime, textViewTimeDev, textViewFactory, textViewPwm;
     Timer timerApp, timerDev;
     ArrayList<TextView> textViewsTemp = new ArrayList<>();
+
+    /*
     CrystalRangeSeekbar rangeSeekBarSoftMode;
 
     SeekBar seekBarPowMod1Time, seekBarPowMod1Val;
@@ -54,7 +60,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     SeekBar seekBarPowMod3Time, seekBarPowMod3Val;
     TextView textViewPowMod1Time, textViewPowMod1Val;
     TextView textViewPowMod2Time, textViewPowMod2Val;
-    TextView textViewPowMod3Time, textViewPowMod3Val;
+    TextView textViewPowMod3Time, textViewPowMod3Val;*/
 
     // Data
     Date dateDev;
@@ -127,7 +133,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         LinearLayout linearLayout = (LinearLayout)findViewById(R.id.layoutTimers);
         timerManager.setParentLayout(linearLayout);
 
-        // Power modes
+        /*/ Power modes
         seekBarPowMod1Time = (SeekBar) findViewById(R.id.seekBarPowMod1Time);
         seekBarPowMod1Time.setMax(10*60);
         seekBarPowMod2Time = (SeekBar) findViewById(R.id.seekBarPowMod2Time);
@@ -149,7 +155,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
 
         powerModes.add(powerMode1);
         powerModes.add(powerMode2);
-        powerModes.add(powerMode3);
+        powerModes.add(powerMode3);*/
 
         textViewPwm = (TextView)findViewById(R.id.textViewPwm);
         seekBarPwm = (SeekBar)findViewById(R.id.seekBarPwm);
@@ -520,11 +526,19 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         // Add new timer
         //timerManager.addTimer();
         Intent intent = new Intent(getApplicationContext(), ActivityCreateTimer.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_ADD_TIMER);
     }
 
     public void startOnClick(View view){
         Log.i("mytag", "STARTER");
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i("mytag", "response");
+        if(requestCode == REQUEST_ADD_TIMER){
+            Log.i("mylog", "RESULT OF REQUEST: " + data.getStringExtra("test"));
+        }
+    }
 }

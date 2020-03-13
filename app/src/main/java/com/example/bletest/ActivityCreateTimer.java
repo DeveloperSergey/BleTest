@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -122,5 +124,11 @@ public class ActivityCreateTimer extends AppCompatActivity implements FragmentPo
         seekBar = (SeekBar)(fragmentManager.findFragmentById(R.id.fragmentPowerModes).getView()
                 .findViewById(R.id.seekBarPowMod3Val));
         Log.i("mytag","val3: " + String.valueOf(seekBar.getProgress()));
+
+        final Context ctx = getApplicationContext();
+        Intent intent = new Intent();
+        intent.putExtra("test", "TEST OK");
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }
