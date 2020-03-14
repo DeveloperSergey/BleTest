@@ -100,34 +100,51 @@ public class ActivityCreateTimer extends AppCompatActivity implements FragmentPo
     }
 
     public void addOnClick(View view){
-        Log.i("mytag","NEW TIMER");
-        Log.i("mytag","radioHard: " + String.valueOf(radioButtonHard.isChecked()));
-        Log.i("mytag","radioSoft: " + String.valueOf(radioButtonSoft.isChecked()));
-        Log.i("mytag","timeStart: " + String.valueOf(seekBarTimeStart.getProgress()));
-        Log.i("mytag","timeStop: " + String.valueOf(seekBarTimeStop.getProgress()));
+        byte[] values = new byte[20];
 
-        SeekBar seekBar = (SeekBar)(fragmentManager.findFragmentById(R.id.fragmentPowerModes).getView()
-                .findViewById(R.id.seekBarPowMod1Time));
-        Log.i("mytag","time1: " + String.valueOf(seekBar.getProgress()));
-        seekBar = (SeekBar)(fragmentManager.findFragmentById(R.id.fragmentPowerModes).getView()
-                .findViewById(R.id.seekBarPowMod2Time));
-        Log.i("mytag","time2: " + String.valueOf(seekBar.getProgress()));
-        seekBar = (SeekBar)(fragmentManager.findFragmentById(R.id.fragmentPowerModes).getView()
-                .findViewById(R.id.seekBarPowMod3Time));
-        Log.i("mytag","time3: " + String.valueOf(seekBar.getProgress()));
-        seekBar = (SeekBar)(fragmentManager.findFragmentById(R.id.fragmentPowerModes).getView()
-                .findViewById(R.id.seekBarPowMod1Val));
-        Log.i("mytag","val1: " + String.valueOf(seekBar.getProgress()));
-        seekBar = (SeekBar)(fragmentManager.findFragmentById(R.id.fragmentPowerModes).getView()
-                .findViewById(R.id.seekBarPowMod2Val));
-        Log.i("mytag","val2: " + String.valueOf(seekBar.getProgress()));
-        seekBar = (SeekBar)(fragmentManager.findFragmentById(R.id.fragmentPowerModes).getView()
-                .findViewById(R.id.seekBarPowMod3Val));
-        Log.i("mytag","val3: " + String.valueOf(seekBar.getProgress()));
+        // Command
+        values[0] = 0; // write
+        values[1] = 0; // res
+        //Time start
+        values[2] = (byte)(seekBarTimeStart.getProgress() & 0xFF);
+        values[3] = (byte)((seekBarTimeStart.getProgress() >> 8) & 0xFF);
+        // Time stop
+        values[4] = (byte)(seekBarTimeStop.getProgress() & 0xFF);
+        values[5] = (byte)((seekBarTimeStop.getProgress() >> 8) & 0xFF);
 
-        final Context ctx = getApplicationContext();
+        FragmentPowerModes fragment = (FragmentPowerModes)fragmentManager.findFragmentById(R.id.fragmentPowerModes);
+        byte[] valuesPower = fragment.getBytes();
+
+        values[6] = valuesPower[0];
+        values[7] = valuesPower[1];
+        values[8] = valuesPower[2];
+        values[9] = valuesPower[3];
+        values[10] = valuesPower[4];
+        values[11] = valuesPower[5];
+        values[12] = valuesPower[6];
+        values[13] = valuesPower[7];
+        values[14] = valuesPower[8];
+
+        // Type soft
+        if(radioButtonSoft.isChecked()) values[15] = 1;
+        else values[15] = 0;
+
+        // ID
+        values[16] = 0;
+
+        // Enable
+        values[17] = 1;
+
+        // Reserved
+        values[18] = 0;
+
+        // LRC
+        values[19] = 0;
+        values[19] = CheckSum.LRC(values);
+
+
         Intent intent = new Intent();
-        intent.putExtra("test", "TEST OK");
+        intent.putExtra("data", values);
         setResult(RESULT_OK, intent);
         finish();
     }

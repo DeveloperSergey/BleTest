@@ -106,6 +106,11 @@ public class FragmentPowerModes extends Fragment implements PowerMode.PowerModeC
         powerMode1 = new PowerMode(0,this, textViewPowMod1Time, textViewPowMod1Val, seekBarPowMod1Time,seekBarPowMod1Val);
         powerMode2 = new PowerMode(1,this, textViewPowMod2Time, textViewPowMod2Val, seekBarPowMod2Time, seekBarPowMod2Val);
         powerMode3 = new PowerMode(2,this, textViewPowMod3Time, textViewPowMod3Val, seekBarPowMod3Time, seekBarPowMod3Val);
+
+        // Initialization
+        seekBarPowMod1Time.setProgress(60*1);
+        seekBarPowMod2Time.setProgress(60*1);
+        seekBarPowMod3Time.setProgress(60*1);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -150,5 +155,36 @@ public class FragmentPowerModes extends Fragment implements PowerMode.PowerModeC
     @Override
     public void powerModeChangedCallback(int id) {
         Log.i("mytag", "power mode changed in fragment");
+    }
+
+    // My method
+    public byte[] getBytes(){
+
+        byte[] values = new byte[9];
+        SeekBar seekBar;
+
+        // Time mode 1
+        seekBar = (SeekBar)(getView().findViewById(R.id.seekBarPowMod1Time));
+        values[0] = (byte)(seekBar.getProgress() & 0xFF);
+        values[1] = (byte)((seekBar.getProgress() >> 8) & 0xFF);
+        // Time mode 2
+        seekBar = (SeekBar)(getView().findViewById(R.id.seekBarPowMod2Time));
+        values[2] = (byte)(seekBar.getProgress() & 0xFF);
+        values[3] = (byte)((seekBar.getProgress() >> 8) & 0xFF);
+        // Time mode 3
+        seekBar = (SeekBar)(getView().findViewById(R.id.seekBarPowMod3Time));
+        values[4] = (byte)(seekBar.getProgress() & 0xFF);
+        values[5] = (byte)((seekBar.getProgress() >> 8) & 0xFF);
+        // Value mode 1
+        seekBar = (SeekBar)(getView().findViewById(R.id.seekBarPowMod1Val));
+        values[6] = (byte)(seekBar.getProgress() & 0xFF);
+        // Value mode 2
+        seekBar = (SeekBar)(getView().findViewById(R.id.seekBarPowMod2Val));
+        values[7] = (byte)(seekBar.getProgress() & 0xFF);
+        // Value mode 3
+        seekBar = (SeekBar)(getView().findViewById(R.id.seekBarPowMod3Val));
+        values[8] = (byte)(seekBar.getProgress() & 0xFF);
+
+        return values;
     }
 }

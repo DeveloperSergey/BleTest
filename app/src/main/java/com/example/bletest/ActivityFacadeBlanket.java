@@ -2,6 +2,7 @@ package com.example.bletest;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -9,6 +10,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +24,10 @@ import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
 import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarFinalValueListener;
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Date;
@@ -31,23 +35,25 @@ import java.util.List;
 import java.util.UUID;
 
 public class ActivityFacadeBlanket extends AppCompatActivity implements BleConnector.BleCallbacks,
-        PowerMode.PowerModeCallback {
+        PowerMode.PowerModeCallback, FragmentPowerModes.OnFragmentInteractionListener {
 
     final String svUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
     final String svcFactoryUUID = "0000fff1-0000-1000-8000-00805f9b34fb";
     final String svcTimeUUID = "0000fff2-0000-1000-8000-00805f9b34fb";
     final String svcEnableUUID = "0000fff3-0000-1000-8000-00805f9b34fb";
     final String svcTemperatureUUID = "0000fff4-0000-1000-8000-00805f9b34fb";
-    final String svcPowerUUID = "0000fff5-0000-1000-8000-00805f9b34fb";
+    final String svcTimersUUID = "0000fff5-0000-1000-8000-00805f9b34fb";
+    final String svcAlarmUUID = "0000fff5-0000-1000-8000-00805f9b34fb";
 
     final int REQUEST_ADD_TIMER = 101;
+
+    FragmentManager fragmentManager;
 
     final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     // GUI
     Context ctx;
     SeekBar seekBarPwm;
-    //SeekBar seekBarHard;
     TextView textViewTime, textViewTimeDev, textViewFactory, textViewPwm;
     Timer timerApp, timerDev;
     ArrayList<TextView> textViewsTemp = new ArrayList<>();
@@ -71,13 +77,12 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     // BLE
     BleConnector bleConnector;
     BluetoothDevice device = null;
-    PowerMode powerMode1, powerMode2, powerMode3, powerModeHard;
     ArrayList<PowerMode> powerModes = new ArrayList<>();
 
     @Override
     public void powerModeChangedCallback(int id) {
         Log.i("mytag", "POWER MODE CHANGED");
-        if ( !bleConnector.isConnect() ) return;
+        /*if ( !bleConnector.isConnect() ) return;
         BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
         BluetoothGattCharacteristic charPower = service.getCharacteristic(UUID.fromString(svcPowerUUID));
 
@@ -114,7 +119,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         values[15] = (byte)lrc;
         charPower.setValue(values);
 
-        bleConnector.writeChar(charPower);
+        bleConnector.writeChar(charPower);*/
     }
 
     @Override
@@ -129,9 +134,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         bleConnector = new BleConnector(this, device, this);
         bleConnector.connect();
 
-        timerManager = new TimerManager(this.getApplicationContext());
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.layoutTimers);
-        timerManager.setParentLayout(linearLayout);
+        fragmentManager = getSupportFragmentManager();
 
         /*/ Power modes
         seekBarPowMod1Time = (SeekBar) findViewById(R.id.seekBarPowMod1Time);
@@ -175,6 +178,8 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.i("mytag", String.valueOf(seekBar.getProgress()));
 
+                // TODO Correction!!!
+
                 if (bleConnector.bleGatt == null) return;
                 BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
                 BluetoothGattCharacteristic charEnable = service.getCharacteristic(UUID.fromString(svcEnableUUID));
@@ -188,6 +193,8 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                 charEnable.setValue(values);
                 bleConnector.writeChar(charEnable);
                 // Add sequence!
+                Toast.makeText(ctx, "Power " +
+                        String.valueOf(seekBar.getProgress() + "%"), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -273,31 +280,39 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                 setTimeInDevice();
                 getPowerSettings();
 
-                // Enable notification
                 UUID CLIENT_CHARACTERISTIC_CONFIG_UUID = convertFromInteger(0x2902);
+                BluetoothGattDescriptor descriptor;
+
+                /*/ Enable notification Temperature
                 BluetoothGattCharacteristic charTemperature = service.getCharacteristic(UUID.fromString(svcTemperatureUUID));
                 bleConnector.bleGatt.setCharacteristicNotification(charTemperature, true);
-                BluetoothGattDescriptor descriptor = charTemperature.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID);
+                descriptor = charTemperature.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID);
                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                if(bleConnector.writeDesc(descriptor));
+                if(bleConnector.writeDesc(descriptor));*/
 
-                // Enable notification
+                /*/ Enable notification Time
                 BluetoothGattCharacteristic charTime = service.getCharacteristic(UUID.fromString(svcTimeUUID));
                 bleConnector.bleGatt.setCharacteristicNotification(charTime, true);
                 descriptor = charTime.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID);
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                if(bleConnector.writeDesc(descriptor));*/
+
+                // Enable notification Timers
+                BluetoothGattCharacteristic charTimers = service.getCharacteristic(UUID.fromString(svcTimersUUID));
+                bleConnector.bleGatt.setCharacteristicNotification(charTimers, true);
+                descriptor = charTimers.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID);
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                if(bleConnector.writeDesc(descriptor));
+
+                // Enable notification Alarm
+                BluetoothGattCharacteristic charAlarm = service.getCharacteristic(UUID.fromString(svcAlarmUUID));
+                bleConnector.bleGatt.setCharacteristicNotification(charAlarm, true);
+                descriptor = charAlarm.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID);
                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                 if(bleConnector.writeDesc(descriptor));
             }
         });
     }
-
-    public UUID convertFromInteger(int i) {
-        final long MSB = 0x0000000000001000L;
-        final long LSB = 0x800000805f9b34fbL;
-        long value = i & 0xFFFFFFFF;
-        return new UUID(MSB | (value << 32), LSB);
-    }
-
 
     @Override
     public void disconnectedCallback() {
@@ -359,7 +374,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                 });
             }
         }
-        else if(uuid.toString().equals(svcPowerUUID)){
+        /*else if(uuid.toString().equals(svcPowerUUID)){
             final int time1 = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 0);
             final int power1 = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 2);
             final int time2 = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 3);
@@ -370,7 +385,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
             final int timeSoftStart = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 11);
             final int timeSoftStop = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 13);
 
-            /*Log.i("mytag", String.valueOf(time1));
+           Log.i("mytag", String.valueOf(time1));
             Log.i("mytag", String.valueOf(power1));
             Log.i("mytag", String.valueOf(time2));
             Log.i("mytag", String.valueOf(power2));
@@ -378,7 +393,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
             Log.i("mytag", String.valueOf(power3));
             Log.i("mytag", String.valueOf(timeHardStart));
             Log.i("mytag", String.valueOf(timeSoftStart));
-            Log.i("mytag", String.valueOf(timeSoftStop));*/
+            Log.i("mytag", String.valueOf(timeSoftStop));
 
             this.runOnUiThread(new Runnable() {
                 @Override
@@ -393,7 +408,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                     //rangeSeekBarSoftMode.setMinStartValue(timeSoftStart).setMaxStartValue(timeSoftStop).apply();
                 }
             });
-        }
+        }*/
     }
 
     @Override
@@ -436,6 +451,13 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                 });
             }
         }
+        else if(uuid.toString().equals(svcTimersUUID)){
+            byte[] values = characteristic.getValue();
+            Log.i("mytag",  Arrays.toString(values));
+        }
+        else if(uuid.toString().equals(svcAlarmUUID)){
+            Toast.makeText(ctx, "ALARM", Toast.LENGTH_LONG).show();
+        }
         else Log.i("mytag", "UNKNOW CALLBACK");
     }
 
@@ -453,6 +475,8 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
 
     public void ledClicked(View view){
         Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
+        // Read timres
+        boardGetTimers();
     }
 
     private void TimerMethodApp() {
@@ -496,30 +520,20 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                 (byte) ((value >> 24) & 0xFF),
                 0
         };
-        int lrc = 0;
-        for(byte b : values){
-            lrc = (byte)(lrc + b);
-        }
-        lrc = (255 - lrc) + 1;
-        //Log.i("mytag", String.valueOf(lrc));
-        values[4] = (byte)lrc;
+        values[4] = CheckSum.LRC(values);
 
         charTime.setValue(values);
         bleConnector.writeChar(charTime);
     }
 
     private void getPowerSettings(){
-        if ( !bleConnector.isConnect() ) return;
+        /*if ( !bleConnector.isConnect() ) return;
         BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
         BluetoothGattCharacteristic charPower = service.getCharacteristic(UUID.fromString(svcPowerUUID));
-        bleConnector.readChar(charPower);
+        bleConnector.readChar(charPower);*/
     }
 
-    public void resetOnClick(View view){
-
-    }
-
-    public void timersOnClick(View view){
+    public void timersAddOnClick(View view){
         /*Intent intent = new Intent(ctx, ActivityBlanketTimers.class);
         intent.putExtra("device", device);
         startActivity(intent);*/
@@ -529,16 +543,117 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         startActivityForResult(intent, REQUEST_ADD_TIMER);
     }
 
+    public void timersClrOnClick(View view){
+        Log.i("mytag", "CLEAR TIMERS");
+
+        byte[] command = new byte[20];
+        command[0] = 3;
+        command[19] = CheckSum.LRC(command);
+        // Send to board
+        if (!bleConnector.isConnect()) return;
+        BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+        BluetoothGattCharacteristic charTimers = service.getCharacteristic(UUID.fromString(svcTimersUUID));
+        charTimers.setValue(command);
+        bleConnector.writeChar(charTimers);
+    }
+
     public void startOnClick(View view){
-        Log.i("mytag", "STARTER");
+
+        byte[] values = new byte[20];
+
+        // Command
+        values[0] = 4; // write
+        values[1] = 0; // res
+        //Time start
+        values[2] = 0;
+        values[3] = 0;
+        // Time stop
+        values[4] = 0;
+        values[5] = 0;
+
+        FragmentPowerModes fragment = (FragmentPowerModes)fragmentManager.findFragmentById(R.id.fragmentPowerModes);
+        byte[] valuesPower = fragment.getBytes();
+
+        values[6] = valuesPower[0];
+        values[7] = valuesPower[1];
+        values[8] = valuesPower[2];
+        values[9] = valuesPower[3];
+        values[10] = valuesPower[4];
+        values[11] = valuesPower[5];
+        values[12] = valuesPower[6];
+        values[13] = valuesPower[7];
+        values[14] = valuesPower[8];
+
+        // Type soft
+        values[15] = 0;
+
+        // ID
+        values[16] = 0;
+
+        // Enable
+        values[17] = 1;
+
+        // Reserved
+        values[18] = 0;
+
+        // LRC
+        values[19] = 0;
+        values[19] = CheckSum.LRC(values);
+
+        // Send to board
+        if (!bleConnector.isConnect()) return;
+        BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+        BluetoothGattCharacteristic charTimers = service.getCharacteristic(UUID.fromString(svcTimersUUID));
+        charTimers.setValue(values);
+        bleConnector.writeChar(charTimers);
+
+
+
+        Toast.makeText(ctx, "START", Toast.LENGTH_LONG).show();
+    }
+
+    private void boardGetTimers(){
+
+        byte[] command = new byte[20];
+        command[0] = 1;
+        command[19] = CheckSum.LRC(command);
+        // Send to board
+        if (!bleConnector.isConnect()) return;
+        BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+        BluetoothGattCharacteristic charTimers = service.getCharacteristic(UUID.fromString(svcTimersUUID));
+        charTimers.setValue(command);
+        bleConnector.writeChar(charTimers);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("mytag", "response");
-        if(requestCode == REQUEST_ADD_TIMER){
-            Log.i("mylog", "RESULT OF REQUEST: " + data.getStringExtra("test"));
+        if((requestCode == REQUEST_ADD_TIMER) && (resultCode == RESULT_OK)){
+            byte[] result = data.getByteArrayExtra("data");
+            Log.i("mytag", Arrays.toString(result));
+
+            // Send to board
+            if (!bleConnector.isConnect()) return;
+            BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+            BluetoothGattCharacteristic charTimers = service.getCharacteristic(UUID.fromString(svcTimersUUID));
+            charTimers.setValue(result);
+            bleConnector.writeChar(charTimers);
+
+            // Add to collection
         }
+    }
+
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+
+    public UUID convertFromInteger(int i) {
+        final long MSB = 0x0000000000001000L;
+        final long LSB = 0x800000805f9b34fbL;
+        long value = i & 0xFFFFFFFF;
+        return new UUID(MSB | (value << 32), LSB);
     }
 }

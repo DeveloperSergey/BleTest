@@ -30,8 +30,8 @@ public class PowerMode {
             this.seekBarTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    textViewTime.setText(String.valueOf(seekBar.getProgress() / 60) + ":" +
-                            String.valueOf(seekBar.getProgress() % 60));
+                    textViewTime.setText(String.valueOf(seekBar.getProgress() / 60) + "h:" +
+                            String.valueOf(seekBar.getProgress() % 60) + "m");
                 }
 
                 @Override
