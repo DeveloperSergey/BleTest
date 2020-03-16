@@ -3,7 +3,7 @@ package com.example.bletest;
 import java.nio.ByteBuffer;
 
 public class BlanketTimer {
-    String text;
+    String text = "Hello";
 
     int command;
     int time_start, time_stop;
@@ -14,12 +14,12 @@ public class BlanketTimer {
     BlanketTimer(){}
     BlanketTimer(byte[] values){
         if(values.length == 20){
-            command =  (int)(values[0] | (values[1] << 8));
-            time_start =  (int)(values[2] | (values[3] << 8));
-            time_stop =  (int)(values[4] | (values[5] << 8));
-            time1 =  (int)(values[6] | (values[7] << 8));
-            time2 =  (int)(values[8] | (values[9] << 8));
-            time3 =  (int)(values[10] | (values[11] << 8));
+            command =  ((values[0]&0xFF) | ((values[1]&0xFF) << 8));
+            time_start =  ((values[2]&0xFF) | ((values[3]&0xFF) << 8));
+            time_stop =  ((values[4]&0xFF) | ((values[5]&0xFF) << 8));
+            time1 =  ((values[6]&0xFF) | ((values[7]&0xFF) << 8));
+            time2 =  ((values[8]&0xFF) | ((values[9]&0xFF) << 8));
+            time3 =  ((values[10]&0xFF) | ((values[11]&0xFF) << 8));
             power1 =  (int)values[12];
             power2 =  (int)values[13];
             power3 =  (int)values[14];
@@ -29,5 +29,10 @@ public class BlanketTimer {
             res =  (int)values[18];
             lrc =  (int)values[19];
         }
+    }
+
+    static String timeToString(int time){
+        return String.valueOf(time / 60) + "h:" +
+                String.valueOf(time % 60) + "m";
     }
 }

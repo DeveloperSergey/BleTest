@@ -30,6 +30,7 @@
             android:layout_marginBottom="8dp"
             android:orientation="vertical">
 
+
             <TextView
                 android:id="@+id/textViewFactory"
                 android:layout_width="match_parent"
@@ -280,204 +281,6 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
-            <!--
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/temperature_background"
-                android:gravity="center_vertical"
-                android:padding="10dp">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textViewPowMod1Title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_weight="1"
-                        android:text="Power mode 1"
-                        android:textSize="18sp" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textViewPowMod1Time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="5h:00m" />
-
-                    <TextView
-                        android:id="@+id/textViewPowMod1Val"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="100%" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <SeekBar
-                        android:id="@+id/seekBarPowMod1Time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:indeterminate="false"
-                        android:max="10"
-                        android:progress="5" />
-
-                    <SeekBar
-                        android:id="@+id/seekBarPowMod1Val"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:progress="100" />
-                </TableRow>
-
-            </TableLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/temperature_background"
-                android:gravity="center_vertical"
-                android:padding="10dp">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textViewPowMod2Title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_weight="1"
-                        android:text="Power mode 2"
-                        android:textSize="18sp" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textViewPowMod2Time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="5h:00m" />
-
-                    <TextView
-                        android:id="@+id/textViewPowMod2Val"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="50%" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <SeekBar
-                        android:id="@+id/seekBarPowMod2Time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:indeterminate="false"
-                        android:max="10"
-                        android:progress="5" />
-
-                    <SeekBar
-                        android:id="@+id/seekBarPowMod2Val"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:progress="50" />
-                </TableRow>
-
-            </TableLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/temperature_background"
-                android:gravity="center_vertical"
-                android:padding="10dp">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textViewPowMod3Title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_weight="1"
-                        android:text="Power mode 3"
-                        android:textSize="18sp" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textViewPowMod3Time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="5h:00m" />
-
-                    <TextView
-                        android:id="@+id/textViewPowMod3Val"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="10%" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <SeekBar
-                        android:id="@+id/seekBarPowMod3Time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:indeterminate="false"
-                        android:max="10"
-                        android:progress="5" />
-
-                    <SeekBar
-                        android:id="@+id/seekBarPowMod3Val"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:progress="10" />
-                </TableRow>
-
-            </TableLayout>
-            -->
 
             <fragment
                 android:id="@+id/fragmentPowerModesBlt"
@@ -534,7 +337,12 @@
             <ListView
                 android:id="@+id/listViewTimers"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="300dp" >
+            </ListView>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="10dp" />
 
 
         </LinearLayout>

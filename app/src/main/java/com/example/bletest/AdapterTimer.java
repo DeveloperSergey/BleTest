@@ -57,9 +57,18 @@ public class AdapterTimer extends BaseAdapter {
 
         BlanketTimer timer = getTimer(position);
 
-        ((TextView) view.findViewById(R.id.textViewTitle)).setText(timer.text);
+        TextView textView;
+        ((TextView) view.findViewById(R.id.textViewId)).setText(String.valueOf(position+1));
+        textView = ((TextView) view.findViewById(R.id.textViewType));
+        if(timer.type == 0) textView.setText("Hard");
+        else textView.setText("Soft");
+        ((TextView) view.findViewById(R.id.textViewStart)).setText(BlanketTimer.timeToString(timer.time_start));
+        ((TextView) view.findViewById(R.id.textViewStop)).setText(BlanketTimer.timeToString(timer.time_stop));
         ((ImageButton)view.findViewById(R.id.imageButton)).setOnClickListener(myOnClickListener);
-        ((Switch)view.findViewById(R.id.switchOn)).setOnCheckedChangeListener(myCheckedChangeListener);
+        Switch sw = ((Switch)view.findViewById(R.id.switchOn));
+        sw.setOnCheckedChangeListener(myCheckedChangeListener);
+        if(timer.enable == 1) sw.setChecked(true);
+        else sw.setChecked(false);
 
         return view;
     }
