@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,6 +79,10 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     BleConnector bleConnector;
     BluetoothDevice device = null;
     ArrayList<PowerMode> powerModes = new ArrayList<>();
+
+    // Timers
+    ArrayList<BlanketTimer> timers = new ArrayList<>();
+    AdapterTimer adapterTimer;
 
     @Override
     public void powerModeChangedCallback(int id) {
@@ -261,6 +266,12 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                 TimerMethodDev();
             }
         }, 0, 3000);*/
+
+
+        // Timers
+        adapterTimer = new AdapterTimer(ctx, timers);
+        ListView listViewTimers = (ListView)findViewById(R.id.listViewTimers);
+        listViewTimers.setAdapter(adapterTimer);
     }
 
     @Override
@@ -640,6 +651,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
             bleConnector.writeChar(charTimers);
 
             // Add to collection
+            timers.add(new BlanketTimer(result));
         }
     }
 
