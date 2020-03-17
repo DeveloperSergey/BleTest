@@ -104,7 +104,11 @@ public class MainActivity extends AppCompatActivity {
                     dialog.setDevice(device);
                     dialog.show(getSupportFragmentManager(), "dialog");*/
 
-                    Intent intent = new Intent(ctx, ActivityFacadeBlanket.class);
+                    /*Intent intent = new Intent(ctx, ActivityFacadeBlanket.class);
+                    intent.putExtra("device", device);
+                    startActivity(intent);*/
+
+                    Intent intent = new Intent(ctx, ActivityFacadeInsole.class);
                     intent.putExtra("device", device);
                     startActivity(intent);
                 }

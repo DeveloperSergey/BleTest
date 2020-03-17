@@ -115,12 +115,12 @@ public class ActivityFacadeDevice extends AppCompatActivity implements BleConnec
     }
 
     @Override
-    public void writedCharCallback() {
+    public void writeCharCallback() {
 
     }
 
     @Override
-    public void readedCharCallback(BluetoothGattCharacteristic characteristic) {
+    public void readCharCallback(BluetoothGattCharacteristic characteristic) {
 
     }
 

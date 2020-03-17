@@ -18,8 +18,8 @@ public class BleConnector{
     interface BleCallbacks{
         void connectedCallback(List<BluetoothGattService> services);
         void disconnectedCallback();
-        void writedCharCallback();
-        void readedCharCallback(BluetoothGattCharacteristic characteristic);
+        void writeCharCallback();
+        void readCharCallback(BluetoothGattCharacteristic characteristic);
         void notificationCallback(BluetoothGattCharacteristic characteristic);
     }
 
@@ -91,7 +91,7 @@ public class BleConnector{
             super.onDescriptorWrite(gatt, descriptor, status);
 
             if (status == BluetoothGatt.GATT_SUCCESS)
-                callbacks.writedCharCallback();
+                callbacks.writeCharCallback();
         }
 
         @Override
@@ -99,7 +99,7 @@ public class BleConnector{
             super.onCharacteristicRead(gatt, characteristic, status);
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                callbacks.readedCharCallback(characteristic);
+                callbacks.readCharCallback(characteristic);
             } else
                 Log.i("mytag", "Red char failed!");
         }
@@ -107,7 +107,6 @@ public class BleConnector{
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            //Log.i("mytag", "RECEIVED NOTI");
             callbacks.notificationCallback(characteristic);
         }
 
@@ -188,6 +187,7 @@ public class BleConnector{
         return true;
     }
     public boolean writeDesc(final BluetoothGattDescriptor descriptor){
+        if(descriptor == null) return false;
         Thread thread = new Thread(
                 new Runnable(){
                     @Override
@@ -212,5 +212,11 @@ public class BleConnector{
         thread.start();
 
         return true;
+    }
+    static public UUID convertFromInteger(int i) {
+        final long MSB = 0x0000000000001000L;
+        final long LSB = 0x800000805f9b34fbL;
+        long value = i & 0xFFFFFFFF;
+        return new UUID(MSB | (value << 32), LSB);
     }
 }

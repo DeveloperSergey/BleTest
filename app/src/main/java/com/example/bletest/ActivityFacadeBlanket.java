@@ -13,20 +13,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
-import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarFinalValueListener;
-import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,9 +29,6 @@ import java.util.TimerTask;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.zip.Inflater;
-
-import static com.example.bletest.R.layout.listview_header;
 
 public class ActivityFacadeBlanket extends AppCompatActivity implements BleConnector.BleCallbacks,
         PowerMode.PowerModeCallback, FragmentPowerModes.OnFragmentInteractionListener {
@@ -305,7 +296,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                 setTimeInDevice();
                 getPowerSettings();
 
-                UUID CLIENT_CHARACTERISTIC_CONFIG_UUID = convertFromInteger(0x2902);
+                UUID CLIENT_CHARACTERISTIC_CONFIG_UUID = BleConnector.convertFromInteger(0x2902);
                 BluetoothGattDescriptor descriptor;
 
                 // Enable notification Temperature
@@ -352,7 +343,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     }
 
     @Override
-    public void writedCharCallback() {
+    public void writeCharCallback() {
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -362,7 +353,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     }
 
     @Override
-    public void readedCharCallback(BluetoothGattCharacteristic characteristic) {
+    public void readCharCallback(BluetoothGattCharacteristic characteristic) {
 
         UUID uuid = characteristic.getUuid();
         if(uuid.toString().equals(svcFactoryUUID)){
@@ -678,14 +669,6 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     @Override
     public void onFragmentInteraction(Uri uri) {
 
-    }
-
-
-    public UUID convertFromInteger(int i) {
-        final long MSB = 0x0000000000001000L;
-        final long LSB = 0x800000805f9b34fbL;
-        long value = i & 0xFFFFFFFF;
-        return new UUID(MSB | (value << 32), LSB);
     }
 
     public void addTimer(final byte[] values){
