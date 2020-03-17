@@ -67,7 +67,8 @@ public class BleConnector{
                 bleGatt.disconnect();
                 bleGatt.close();
                 bleGatt = null;
-                device = null;
+
+                bleGatt = device.connectGatt(context, false, gattCallback);
                 callbacks.disconnectedCallback();
             }
 

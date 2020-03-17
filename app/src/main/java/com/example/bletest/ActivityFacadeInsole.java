@@ -74,6 +74,7 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
     public void connectedCallback(List<BluetoothGattService> services) {
 
         Log.i("mytag", "Connected");
+        handler.post(showToastConnect);
 
         BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
         UUID CLIENT_CHARACTERISTIC_CONFIG_UUID = BleConnector.convertFromInteger(0x2902);
@@ -171,6 +172,13 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
             LineGraphSeries<DataPoint> series = mySeries;
             graph.addSeries(series);
             graph.invalidate();
+        }
+    };
+
+    Runnable showToastConnect = new Runnable() {
+        @Override
+        public void run() {
+            Toast.makeText(ctx, "CONNECT", Toast.LENGTH_LONG).show();
         }
     };
 
