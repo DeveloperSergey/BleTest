@@ -108,9 +108,9 @@ public class FragmentPowerModes extends Fragment implements PowerMode.PowerModeC
         powerMode3 = new PowerMode(2,this, textViewPowMod3Time, textViewPowMod3Val, seekBarPowMod3Time, seekBarPowMod3Val);
 
         // Initialization
-        seekBarPowMod1Time.setProgress(60*1);
-        seekBarPowMod2Time.setProgress(60*1);
-        seekBarPowMod3Time.setProgress(60*1);
+        seekBarPowMod1Time.setProgress(1);
+        seekBarPowMod2Time.setProgress(1);
+        seekBarPowMod3Time.setProgress(1);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -47,7 +47,7 @@
                     android:id="@+id/textViewPowMod1Val"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.3"
                     android:text="100%" />
             </TableRow>
 
@@ -68,7 +68,7 @@
                     android:id="@+id/seekBarPowMod1Val"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.3"
                     android:progress="100" />
             </TableRow>
 
@@ -114,7 +114,7 @@
                     android:id="@+id/textViewPowMod2Val"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.3"
                     android:text="50%" />
             </TableRow>
 
@@ -135,7 +135,7 @@
                     android:id="@+id/seekBarPowMod2Val"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.3"
                     android:progress="50" />
             </TableRow>
 
@@ -181,7 +181,7 @@
                     android:id="@+id/textViewPowMod3Val"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.3"
                     android:text="10%" />
             </TableRow>
 
@@ -202,15 +202,11 @@
                     android:id="@+id/seekBarPowMod3Val"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.3"
                     android:progress="10" />
             </TableRow>
 
         </TableLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp" />
 
     </LinearLayout>
 </FrameLayout>
