@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -24,6 +25,9 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Date;
@@ -164,16 +168,8 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         // Timers
 
         adapterTimer = new AdapterTimer(ctx, timers);
-        ListView listViewTimers = (ListView)findViewById(R.id.listViewTimers);
+        final ListView listViewTimers = (ListView)findViewById(R.id.listViewTimers);
         listViewTimers.setAdapter(adapterTimer);
-
-        //LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //View view = inflater.inflate(R.layout.listview_header, null, false);
-        //listViewTimers.addHeaderView(view);
-
-        //byte[] test = new byte[20];
-        //for(int i = 0; i < 10; i++) timers.add(new BlanketTimer(test));
-
 
         textViewPwm = (TextView)findViewById(R.id.textViewPwm);
         seekBarPwm = (SeekBar)findViewById(R.id.seekBarPwm);
@@ -458,7 +454,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
             //Log.i("mytag", String.valueOf(lrcSum) );
 
             if (lrcSum == 0) {
-                dateDev = new Date(value * 1000);
+                dateDev = new Date((value * 1000) - new GregorianCalendar().getTimeZone().getRawOffset());
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -529,8 +525,9 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         if (!bleConnector.isConnect()) return;
         BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
         BluetoothGattCharacteristic charTime = service.getCharacteristic(UUID.fromString(svcTimeUUID));
-        long value = new Date().getTime()/1000;
-        //Log.i("mytag", String.valueOf(value));
+
+        long value = (new Date().getTime() / 1000) +
+                (new GregorianCalendar().getTimeZone().getRawOffset() / 1000);
 
         byte[] values = new byte[]{
                 (byte) (value & 0xFF),
