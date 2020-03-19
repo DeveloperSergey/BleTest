@@ -33,8 +33,9 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
     Context ctx;
     BluetoothDevice device;
     BleConnector bleConnector;
-    ArrayList<Integer> values = new ArrayList<>();
-    protected GraphView graph;
+    ArrayList<Integer> valuesHumidity = new ArrayList<>();
+    ArrayList<Integer> valuesTemperature = new ArrayList<>();
+    protected GraphView graphHumi, graphTemp;
     protected ListView listView;
     protected ArrayAdapter<Integer> adapter;
     Handler handler;
@@ -54,20 +55,24 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
         bleConnector.connect();
 
         // Graph
-        graph = (GraphView) findViewById(R.id.graph);
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.setTitle("Humidity");
-        graph.setOnClickListener(new View.OnClickListener() {
+        graphHumi = (GraphView) findViewById(R.id.graphHumi);
+        graphHumi.getViewport().setYAxisBoundsManual(true);
+        graphHumi.getViewport().setXAxisBoundsManual(true);
+        graphHumi.setTitle("Humidity");
+        graphHumi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("mytag", "Graph clicked");
             }
         });
+        graphTemp = (GraphView) findViewById(R.id.graphTemp);
+        graphTemp.getViewport().setYAxisBoundsManual(true);
+        graphTemp.getViewport().setXAxisBoundsManual(true);
+        graphTemp.setTitle("Temperature");
 
-        listView = (ListView)findViewById(R.id.listView);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, values);
-        listView.setAdapter(adapter);
+        /*listView = (ListView)findViewById(R.id.listView);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, valuesHumidity);
+        listView.setAdapter(adapter);*/
     }
 
     @Override
@@ -132,11 +137,14 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
         if(uuid.toString().equals(svcResultUUID)) {
             //Log.i("mytag", "TIME CALLBACK");
             int humidity = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 6);
-            int adc = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 7);
-            values.add(adc);
+            int adc_humidity = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 7);
+            int temperature = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 4);
+            int adc_temperature = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 5);
+            valuesHumidity.add(adc_humidity);
+            valuesTemperature.add(temperature);
             handler.post(updateGraph);
             Log.i("mytag", "Humidity = " + String.valueOf(humidity) +
-                    " ADC = " + String.valueOf(adc));
+                    " ADC = " + String.valueOf(adc_humidity));
         }
     }
 
@@ -144,34 +152,63 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
         @Override
         public void run() {
             // ListView
-            adapter.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
 
             // Graph
-            graph.removeAllSeries();
+            graphHumi.removeAllSeries();
+            graphTemp.removeAllSeries();
 
-            int maxY = -1000000, minY = 1000000;
+            int maxHumidityY = -1000000, minHumidityY = 1000000;
+            int maxTemperatureY = -1000000, minTemperatureY = 1000000;
 
-            LineGraphSeries<DataPoint> mySeries = new LineGraphSeries<>();
+            LineGraphSeries<DataPoint> mySeriesHumidity = new LineGraphSeries<>();
+            LineGraphSeries<DataPoint> mySeriesTemperature = new LineGraphSeries<>();
 
-            for(int index = 0; index < values.size(); index++){
-                int value = values.get(index);
-                mySeries.appendData(new DataPoint(index, value), true, values.size());
-                    /*Log.i("mytag", String.valueOf(index) + " " +
-                            String.valueOf(value));*/
-                if (value > maxY) maxY = value;
-                if (value < minY) minY = value;
+            int lastNum = 300;
+            int size = valuesHumidity.size();
+            int index = 0;
+            int graphIndex = 0;
+            if(valuesHumidity.size() > lastNum) {
+                index = valuesHumidity.size() - lastNum;
+                size = lastNum;
+            }
+            while(graphIndex < size){
+                // Humidity
+                int value = valuesHumidity.get(index);
+                mySeriesHumidity.appendData(new DataPoint(graphIndex, value), true, valuesHumidity.size());
+                if (value > maxHumidityY) maxHumidityY = value;
+                if (value < minHumidityY) minHumidityY = value;
+
+                //Temperature
+                value = valuesTemperature.get(index);
+                mySeriesTemperature.appendData(new DataPoint(graphIndex, value), true, valuesTemperature.size());
+                if (value > maxTemperatureY) maxTemperatureY = value;
+                if (value < minTemperatureY) minTemperatureY = value;
+                index++;
+                graphIndex++;
             }
 
-            mySeries.setDrawDataPoints(true);
-            mySeries.setDataPointsRadius(5);
+            mySeriesHumidity.setDrawDataPoints(true);
+            mySeriesHumidity.setDataPointsRadius(5);
 
-            graph.getViewport().setMinY(minY);
-            graph.getViewport().setMaxY(maxY);
-            graph.getViewport().setMinX(0);
-            graph.getViewport().setMaxX(values.size() - 1);
-            LineGraphSeries<DataPoint> series = mySeries;
-            graph.addSeries(series);
-            graph.invalidate();
+            mySeriesTemperature.setDrawDataPoints(true);
+            mySeriesTemperature.setDataPointsRadius(5);
+
+            graphHumi.getViewport().setMinY(minHumidityY);
+            graphHumi.getViewport().setMaxY(maxHumidityY);
+            graphHumi.getViewport().setMinX(0);
+            graphHumi.getViewport().setMaxX(size);//(valuesHumidity.size() - 1);
+            LineGraphSeries<DataPoint> series = mySeriesHumidity;
+            graphHumi.addSeries(series);
+            graphHumi.invalidate();
+
+            graphTemp.getViewport().setMinY(minTemperatureY);
+            graphTemp.getViewport().setMaxY(maxTemperatureY);
+            graphTemp.getViewport().setMinX(0);
+            graphTemp.getViewport().setMaxX(size);//(valuesTemperature.size() - 1);
+            series = mySeriesTemperature;
+            graphTemp.addSeries(series);
+            graphTemp.invalidate();
         }
     };
 
