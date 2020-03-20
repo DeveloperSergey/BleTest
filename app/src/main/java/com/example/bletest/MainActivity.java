@@ -1,7 +1,10 @@
 package com.example.bletest;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -19,6 +22,7 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.ParcelUuid;
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     /*TEST GITHUB*/
 
+    final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 100;
     final String svUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
 
     private BluetoothAdapter bluetoothAdapter = null;
@@ -66,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ctx = this.getApplicationContext();
+
+        checkPermission();
 
         // GUI
         editTextDevName = (EditText) findViewById(R.id.editTextDevName);
@@ -104,13 +111,13 @@ public class MainActivity extends AppCompatActivity {
                     dialog.setDevice(device);
                     dialog.show(getSupportFragmentManager(), "dialog");*/
 
-                    /*Intent intent = new Intent(ctx, ActivityFacadeBlanket.class);
-                    intent.putExtra("device", device);
-                    startActivity(intent);*/
-
-                    Intent intent = new Intent(ctx, ActivityFacadeInsole.class);
+                    Intent intent = new Intent(ctx, ActivityFacadeBlanket.class);
                     intent.putExtra("device", device);
                     startActivity(intent);
+
+                    /*Intent intent = new Intent(ctx, ActivityFacadeInsole.class);
+                    intent.putExtra("device", device);
+                    startActivity(intent);*/
                 }
             }
         });
@@ -206,6 +213,32 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             Log.i("mytag", "Bluetooth is disable!");
+        }
+    }
+
+    protected void checkPermission() {
+        // LOCATION
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            return;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                }
+                return;
+            }
         }
     }
 
