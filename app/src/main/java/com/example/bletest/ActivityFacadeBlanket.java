@@ -191,7 +191,56 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
 
                 // TODO Correction!!!
 
-                if (bleConnector.bleGatt == null) return;
+                byte[] values = new byte[20];
+
+                // Command
+                values[0] = 4; // write
+                values[1] = 0; // res
+                //Time start
+                values[2] = 0;
+                values[3] = 0;
+                // Time stop
+                values[4] = 0;
+                values[5] = 0;
+
+                FragmentPowerModes fragment = (FragmentPowerModes)fragmentManager.findFragmentById(R.id.fragmentPowerModesBlt);
+                byte[] valuesPower = fragment.getBytes();
+
+                values[6] = (byte)0xff;
+                values[7] = (byte)0xff;
+                values[8] = 0;
+                values[9] = 0;
+                values[10] = 0;
+                values[11] = 0;
+                values[12] = (byte)seekBar.getProgress();
+                values[13] = 0;
+                values[14] = 0;
+
+                // Type soft
+                values[15] = 0;
+
+                // ID
+                values[16] = 0;
+
+                // Enable
+                values[17] = 1;
+
+                // Reserved
+                values[18] = 0;
+
+                // LRC
+                values[19] = 0;
+                values[19] = CheckSum.LRC(values);
+
+                // Send to board
+                if (!bleConnector.isConnect()) return;
+                BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+                BluetoothGattCharacteristic charTimers = service.getCharacteristic(UUID.fromString(svcTimersUUID));
+                charTimers.setValue(values);
+                bleConnector.writeChar(charTimers);
+
+
+                /*if (bleConnector.bleGatt == null) return;
                 BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
                 BluetoothGattCharacteristic charEnable = service.getCharacteristic(UUID.fromString(svcEnableUUID));
                 byte[] values = new byte[]{
@@ -202,7 +251,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                 };
                 Log.i("mytag", String.valueOf(values[0]));
                 charEnable.setValue(values);
-                bleConnector.writeChar(charEnable);
+                bleConnector.writeChar(charEnable);*/
                 // Add sequence!
                 Toast.makeText(ctx, "Power " +
                         String.valueOf(seekBar.getProgress() + "%"), Toast.LENGTH_SHORT).show();
@@ -466,7 +515,15 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         else if(uuid.toString().equals(svcTimersUUID)){
             byte[] values = characteristic.getValue();
             Log.i("mytag",  Arrays.toString(values));
-            addTimer(values);
+
+            boolean isEmpty = true;
+            for(byte b : values) {
+                if (b != 0) isEmpty = false;
+            }
+
+            if(!isEmpty) {
+                addTimer(values);
+            }
         }
         else if(uuid.toString().equals(svcAlarmUUID)){
             Toast.makeText(ctx, "ALARM", Toast.LENGTH_LONG).show();
