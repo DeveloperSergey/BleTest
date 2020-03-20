@@ -337,8 +337,7 @@
             <ListView
                 android:id="@+id/listViewTimers"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" >
-            </ListView>
+                android:layout_height="500dp"></ListView>
 
             <Space
                 android:layout_width="wrap_content"

@@ -83,6 +83,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     final int TIMERS_MAX_NUM = 10;
     ArrayList<BlanketTimer> timers = new ArrayList<>();
     AdapterTimer adapterTimer;
+    ListView listViewTimers;
 
     @Override
     public void powerModeChangedCallback(int id) {
@@ -168,7 +169,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         // Timers
 
         adapterTimer = new AdapterTimer(ctx, timers);
-        final ListView listViewTimers = (ListView)findViewById(R.id.listViewTimers);
+        listViewTimers = (ListView)findViewById(R.id.listViewTimers);
         listViewTimers.setAdapter(adapterTimer);
 
         textViewPwm = (TextView)findViewById(R.id.textViewPwm);
