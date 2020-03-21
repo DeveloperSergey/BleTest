@@ -24,6 +24,7 @@ public class BleConnector{
     }
 
     private final int TRY_NUM = 10;
+    private final int TRY_PERIOD = 500; // ms
     private Context context;
     private BluetoothDevice device = null;
     private BleCallbacks callbacks;
@@ -149,7 +150,7 @@ public class BleConnector{
                     else{
                         Log.i("mytag", "Write fail");
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(TRY_PERIOD);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -175,7 +176,7 @@ public class BleConnector{
                     else{
                         Log.i("mytag", "Read fail");
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(TRY_PERIOD);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -202,7 +203,7 @@ public class BleConnector{
                             else{
                                 Log.i("mytag", "Write desc fail");
                                 try {
-                                    Thread.sleep(1000);
+                                    Thread.sleep(TRY_PERIOD);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -213,6 +214,19 @@ public class BleConnector{
         thread.start();
 
         return true;
+    }
+    public boolean notiEnable(final String srvUUID, String charUUID){
+
+        BluetoothGattService service = this.bleGatt.getService(UUID.fromString(srvUUID));
+        UUID CLIENT_CHARACTERISTIC_CONFIG_UUID = BleConnector.convertFromInteger(0x2902);
+        BluetoothGattDescriptor descriptor;
+
+        // Enable notification
+        BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString(charUUID));
+        this.bleGatt.setCharacteristicNotification(characteristic, true);
+        descriptor = characteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG_UUID);
+        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        return this.writeDesc(descriptor);
     }
     static public UUID convertFromInteger(int i) {
         final long MSB = 0x0000000000001000L;

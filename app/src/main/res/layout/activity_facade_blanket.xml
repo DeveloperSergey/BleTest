@@ -61,7 +61,7 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="12:00:15"
+                    android:text="00:00:00"
                     android:textSize="24sp" />
 
                 <TextView
@@ -71,7 +71,7 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="12:00:15"
+                    android:text="00:00:00"
                     android:textSize="24sp" />
             </LinearLayout>
 
@@ -83,25 +83,77 @@
                 android:padding="10dp">
 
                 <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/textViewCurrPowerMode"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:text="Power"
+                    android:text="Current power mode"
                     android:textSize="18sp" />
 
+
+                <TextView
+                    android:id="@+id/textViewCurrPowerModeVal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="mode 1" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/temperature_background"
+                android:gravity="center_vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="Current power"
+                    android:textSize="18sp" />
+                <!--
                 <SeekBar
                     android:id="@+id/seekBarPwm"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_weight="1" />
+                    -->
 
                 <TextView
                     android:id="@+id/textViewPwm"
-                    android:layout_width="40dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
                     android:text="0%" />
             </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/temperature_background"
+                android:gravity="center_vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/textViewVolt"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="Voltage"
+                    android:textSize="18sp" />
+
+
+                <TextView
+                    android:id="@+id/textViewVoltVal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0 V" />
+            </TableRow>
+
 
             <Space
                 android:layout_width="match_parent"
