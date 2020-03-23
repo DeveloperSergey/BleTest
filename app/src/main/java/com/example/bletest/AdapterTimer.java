@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
@@ -17,7 +18,8 @@ import java.util.ArrayList;
 public class AdapterTimer extends BaseAdapter {
 
     interface BlanketTimerCallback{
-        void removeTimer();
+        void removeTimer(int position);
+        void enableTimer(int position, boolean enable);
     }
     BlanketTimerCallback callback;
 
@@ -25,7 +27,8 @@ public class AdapterTimer extends BaseAdapter {
     LayoutInflater lInflater;
     ArrayList<BlanketTimer> timers;
 
-    AdapterTimer(Context ctx, ArrayList<BlanketTimer> timers){
+    AdapterTimer(BlanketTimerCallback callback, Context ctx, ArrayList<BlanketTimer> timers){
+        this.callback = callback;
         this.ctx = ctx;
         this.timers = timers;
         lInflater = (LayoutInflater) ctx
@@ -64,11 +67,15 @@ public class AdapterTimer extends BaseAdapter {
         else textView.setText("Soft");
         ((TextView) view.findViewById(R.id.textViewStart)).setText(BlanketTimer.timeToString(timer.time_start));
         ((TextView) view.findViewById(R.id.textViewStop)).setText(BlanketTimer.timeToString(timer.time_stop));
-        ((ImageButton)view.findViewById(R.id.imageButton)).setOnClickListener(myOnClickListener);
         Switch sw = ((Switch)view.findViewById(R.id.switchOn));
-        sw.setOnCheckedChangeListener(myCheckedChangeListener);
+        sw.setTag(position);
         if(timer.enable == 1) sw.setChecked(true);
         else sw.setChecked(false);
+
+        Button button = ((Button)view.findViewById(R.id.button));
+        button.setTag(position);
+        button.setOnClickListener(myOnClickListener);
+        sw.setOnCheckedChangeListener(myCheckedChangeListener);
 
         return view;
     }
@@ -80,16 +87,17 @@ public class AdapterTimer extends BaseAdapter {
     View.OnClickListener myOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Toast.makeText(ctx, "DELETE", Toast.LENGTH_SHORT).show();
-            if(callback != null) callback.removeTimer();
+
+            Toast.makeText(ctx, "DELETE: " + String.valueOf((Integer) v.getTag()), Toast.LENGTH_SHORT).show();
+            if(callback != null) callback.removeTimer((Integer) v.getTag());
         }
     };
 
     CompoundButton.OnCheckedChangeListener myCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            Toast.makeText(ctx, "CHANGE", Toast.LENGTH_SHORT).show();
-            if(callback != null) callback.removeTimer();
+            Toast.makeText(ctx, "CHANGE: " + String.valueOf(buttonView.getTag()), Toast.LENGTH_SHORT).show();
+            if(callback != null) callback.enableTimer((Integer)buttonView.getTag(), isChecked);
         }
     };
 }

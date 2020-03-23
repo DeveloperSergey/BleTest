@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="mode 1" />
+                    android:text="DISABLE" />
             </TableRow>
 
             <TableRow
@@ -373,6 +373,14 @@
                     android:text="ADD TIMER" />
 
                 <Button
+                    android:id="@+id/buttonUpdate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="UPDATE"
+                    android:onClick="timersUpdate"/>
+
+                <Button
                     android:id="@+id/buttonClr"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -389,7 +397,7 @@
             <ListView
                 android:id="@+id/listViewTimers"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"></ListView>
+                android:layout_height="600dp"></ListView>
 
             <Space
                 android:layout_width="wrap_content"

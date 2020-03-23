@@ -103,8 +103,9 @@ public class ActivityCreateTimer extends AppCompatActivity implements FragmentPo
         byte[] values = new byte[20];
 
         // Command
-        values[0] = 0; // write
-        values[1] = 0; // res
+        values[0] = 0;
+        // Number
+        values[1] = 0;
         //Time start
         values[2] = (byte)(seekBarTimeStart.getProgress() & 0xFF);
         values[3] = (byte)((seekBarTimeStart.getProgress() >> 8) & 0xFF);
@@ -129,11 +130,12 @@ public class ActivityCreateTimer extends AppCompatActivity implements FragmentPo
         if(radioButtonSoft.isChecked()) values[15] = 1;
         else values[15] = 0;
 
-        // ID
-        values[16] = 0;
 
         // Enable
-        values[17] = 1;
+        values[16] = 1;
+
+        // Complete flag
+        values[17] = 0;
 
         // Reserved
         values[18] = 0;

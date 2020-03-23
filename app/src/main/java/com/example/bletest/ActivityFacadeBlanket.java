@@ -14,8 +14,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -35,7 +38,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ActivityFacadeBlanket extends AppCompatActivity implements BleConnector.BleCallbacks,
-        PowerMode.PowerModeCallback, FragmentPowerModes.OnFragmentInteractionListener {
+        PowerMode.PowerModeCallback, FragmentPowerModes.OnFragmentInteractionListener, AdapterTimer.BlanketTimerCallback {
 
     final String svUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
     final String svcFactoryUUID = "0000fff1-0000-1000-8000-00805f9b34fb";
@@ -69,6 +72,12 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     BleConnector bleConnector;
     BluetoothDevice device = null;
     boolean alarm = true;
+
+    final int TIM_SET = 0;
+    final int TIM_RESET = 1;
+    final int TIM_CLEAR = 2;
+    final int TIM_READ = 3;
+    final int TIM_IMMEDIATELY = 4;
 
     // Timers
     final int TIMERS_MAX_NUM = 10;
@@ -163,7 +172,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
 
         // Timers
 
-        adapterTimer = new AdapterTimer(ctx, timers);
+        adapterTimer = new AdapterTimer(this, ctx, timers);
         listViewTimers = (ListView)findViewById(R.id.listViewTimers);
         listViewTimers.setAdapter(adapterTimer);
 
@@ -516,11 +525,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     }
 
     public void ledClicked(View view){
-        Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
-        // Read timres
-        timers.clear();
-        adapterTimer.notifyDataSetChanged();
-        boardGetTimers();
+        Toast.makeText(this, "LED Clicked", Toast.LENGTH_SHORT).show();
     }
 
     private void TimerMethodApp() {
@@ -585,15 +590,27 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         startActivity(intent);*/
         // Add new timer
         //timerManager.addTimer();
-        Intent intent = new Intent(getApplicationContext(), ActivityCreateTimer.class);
-        startActivityForResult(intent, REQUEST_ADD_TIMER);
+        if(timers.size() >= TIMERS_MAX_NUM){
+            showOverflow();
+        }
+        else {
+            Intent intent = new Intent(getApplicationContext(), ActivityCreateTimer.class);
+            startActivityForResult(intent, REQUEST_ADD_TIMER);
+        }
+    }
+
+    public void timersUpdate(View view){
+        // Read timres
+        timers.clear();
+        adapterTimer.notifyDataSetChanged();
+        boardGetTimers();
     }
 
     public void timersClrOnClick(View view){
         Log.i("mytag", "CLEAR TIMERS");
 
         byte[] command = new byte[20];
-        command[0] = 3;
+        command[0] = TIM_CLEAR;
         command[19] = CheckSum.LRC(command);
         // Send to board
         if (!bleConnector.isConnect()) return;
@@ -612,8 +629,9 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         byte[] values = new byte[20];
 
         // Command
-        values[0] = 4; // write
-        values[1] = 0; // res
+        values[0] = TIM_IMMEDIATELY;
+        // Number
+        values[1] = 0;
         //Time start
         values[2] = 0;
         values[3] = 0;
@@ -634,14 +652,14 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         values[13] = valuesPower[7];
         values[14] = valuesPower[8];
 
-        // Type soft
+        // Type
         values[15] = 0;
 
-        // ID
-        values[16] = 0;
-
         // Enable
-        values[17] = 1;
+        values[16] = 1;
+
+        // Complete flag
+        values[17] = 0;
 
         // Reserved
         values[18] = 0;
@@ -663,7 +681,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     private void boardGetTimers(){
 
         byte[] command = new byte[20];
-        command[0] = 1;
+        command[0] = TIM_READ;
         command[19] = CheckSum.LRC(command);
         // Send to board
         if (!bleConnector.isConnect()) return;
@@ -680,6 +698,14 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
             byte[] result = data.getByteArrayExtra("data");
             Log.i("mytag", Arrays.toString(result));
 
+            //Number
+            BlanketTimer timer = new BlanketTimer(result);
+            timer.number = timers.size();
+            result = timer.getBytes();
+            result[19] = 0;
+            result[19] = CheckSum.LRC(result);
+
+
             // Send to board
             if (!bleConnector.isConnect()) return;
             BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
@@ -687,7 +713,6 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
             charTimers.setValue(result);
             bleConnector.writeChar(charTimers);
 
-            // Add to collection
             addTimer(result);
         }
     }
@@ -722,6 +747,15 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         });
     }
 
+    public void showOverflow(){
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(ctx, "MAX NUM: 10", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     public void updateStatus(final int pm, final int pwm, final int vol){
 
         this.runOnUiThread(new Runnable() {
@@ -742,5 +776,47 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                         + String.valueOf((vol/100)%10) + " V");
             }
         });
+    }
+
+
+    @Override
+    public void removeTimer(int position) {
+        Log.i("mytag", "REMOVE TIMER");
+        byte[] values = timers.get(position).getBytes();
+        values[0] = TIM_RESET;
+        values[19] = 0;
+        values[19] = CheckSum.LRC(values);
+
+        // Send to board
+        if (!bleConnector.isConnect()) return;
+        BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+        BluetoothGattCharacteristic charTimers = service.getCharacteristic(UUID.fromString(svcTimersUUID));
+        charTimers.setValue(values);
+        bleConnector.writeChar(charTimers);
+
+        // Remove from ArrayList
+        timers.remove(position);
+        adapterTimer.notifyDataSetChanged();
+    }
+
+    @Override
+    public void enableTimer(int position, boolean enable) {
+        Log.i("mytag", "ENABLE TIMER");
+
+        BlanketTimer timer = timers.get(position);
+        if(enable) timer.enable = 1;
+        else timer.enable = 0;
+
+        byte[] values = timer.getBytes();
+        values[0] = TIM_SET;
+        values[19] = 0;
+        values[19] = CheckSum.LRC(values);
+
+        // Send to board
+        if (!bleConnector.isConnect()) return;
+        BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
+        BluetoothGattCharacteristic charTimers = service.getCharacteristic(UUID.fromString(svcTimersUUID));
+        charTimers.setValue(values);
+        bleConnector.writeChar(charTimers);
     }
 }

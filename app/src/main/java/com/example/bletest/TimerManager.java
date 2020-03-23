@@ -18,25 +18,4 @@ public class TimerManager {
     TimerManager(Context ctx) {
         this.ctx = ctx;
     }
-
-    public void setParentLayout(LinearLayout parentLayout){
-        this.parentLayout = parentLayout;
-    }
-    public void addTimer() {
-        Log.i("mytag", "ADD TIMER");
-
-        /*LinearLayout layout = new LinearLayout(ctx);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-
-        TextView textView = new TextView(ctx);
-        textView.setText("Hello");
-        layout.addView(textView);
-
-        Button button = new Button(ctx);
-        button.setText("Del");
-        layout.addView(button);
-
-        parentLayout.addView(layout);*/
-        //R.id.timer_item
-    }
 }
