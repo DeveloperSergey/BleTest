@@ -257,11 +257,6 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         // 7 fields for temperatures <-- temperatures from char
         textViewsTemp.add((TextView) findViewById(R.id.textViewTempBoard));
         textViewsTemp.add((TextView) findViewById(R.id.textViewTemp1));
-        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp2));
-        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp3));
-        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp4));
-        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp5));
-        textViewsTemp.add((TextView) findViewById(R.id.textViewTemp6));
 
         /*rangeSeekBarSoftMode = (CrystalRangeSeekbar)findViewById(R.id.rangeSeekbar);
         rangeSeekBarSoftMode.setMaxValue(24*60);
@@ -317,6 +312,11 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     }
 
     @Override
+    public void operationFailed(BleConnector.OPERATIONS operation) {
+        Log.i("mytag", "FAILED: " + String.valueOf(operation));
+    }
+
+    @Override
     public void connectedCallback(List<BluetoothGattService> services) {
         this.runOnUiThread(new Runnable() {
             @Override
@@ -331,8 +331,6 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                 BluetoothGattCharacteristic charFactory = service.getCharacteristic(UUID.fromString(svcFactoryUUID));
                 bleConnector.readChar(charFactory);
                 setTimeInDevice();
-                getPowerSettings();
-
                 bleConnector.notiEnable(svUUID, svcTemperatureUUID);
                 bleConnector.notiEnable(svUUID, svcTimeUUID);
                 bleConnector.notiEnable(svUUID, svcTimersUUID);
@@ -358,7 +356,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.i("mytag", "WRITED CALLBACK");
+                //Log.i("mytag", "WRITED CALLBACK");
             }
         });
     }
@@ -454,7 +452,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
             this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    for(int i = 0; i < 7; i++) {
+                    for(int i = 0; i < 2; i++) {
                         int temp = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_SINT8, i);
                         textViewsTemp.get(i).setText(String.valueOf(temp) + "\u00B0 C");
                     }
@@ -575,13 +573,6 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
 
         charTime.setValue(values);
         bleConnector.writeChar(charTime);
-    }
-
-    private void getPowerSettings(){
-        /*if ( !bleConnector.isConnect() ) return;
-        BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
-        BluetoothGattCharacteristic charPower = service.getCharacteristic(UUID.fromString(svcPowerUUID));
-        bleConnector.readChar(charPower);*/
     }
 
     public void timersAddOnClick(View view){

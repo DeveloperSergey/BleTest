@@ -128,4 +128,9 @@ public class ActivityFacadeDevice extends AppCompatActivity implements BleConnec
     public void notificationCallback(BluetoothGattCharacteristic characteristic) {
 
     }
+
+    @Override
+    public void operationFailed(BleConnector.OPERATIONS operation) {
+
+    }
 }

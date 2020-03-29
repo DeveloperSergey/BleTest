@@ -148,6 +148,11 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
         }
     }
 
+    @Override
+    public void operationFailed(BleConnector.OPERATIONS operation) {
+
+    }
+
     Runnable updateGraph = new Runnable() {
         @Override
         public void run() {

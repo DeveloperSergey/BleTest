@@ -41,7 +41,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="5h:00m" />
+                    android:text="00:01" />
 
                 <TextView
                     android:id="@+id/textViewPowMod1Val"
@@ -62,7 +62,7 @@
                     android:layout_weight="1"
                     android:indeterminate="false"
                     android:max="10"
-                    android:progress="5" />
+                    android:progress="1" />
 
                 <SeekBar
                     android:id="@+id/seekBarPowMod1Val"
@@ -108,14 +108,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="5h:00m" />
+                    android:text="00:01" />
 
                 <TextView
                     android:id="@+id/textViewPowMod2Val"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
-                    android:text="50%" />
+                    android:text="75%" />
             </TableRow>
 
             <TableRow
@@ -129,14 +129,14 @@
                     android:layout_weight="1"
                     android:indeterminate="false"
                     android:max="10"
-                    android:progress="5" />
+                    android:progress="1" />
 
                 <SeekBar
                     android:id="@+id/seekBarPowMod2Val"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
-                    android:progress="50" />
+                    android:progress="75" />
             </TableRow>
 
         </TableLayout>
@@ -175,14 +175,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="5h:00m" />
+                    android:text="00:01" />
 
                 <TextView
                     android:id="@+id/textViewPowMod3Val"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
-                    android:text="10%" />
+                    android:text="55%" />
             </TableRow>
 
             <TableRow
@@ -196,14 +196,14 @@
                     android:layout_weight="1"
                     android:indeterminate="false"
                     android:max="10"
-                    android:progress="5" />
+                    android:progress="1" />
 
                 <SeekBar
                     android:id="@+id/seekBarPowMod3Val"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
-                    android:progress="10" />
+                    android:progress="55" />
             </TableRow>
 
         </TableLayout>

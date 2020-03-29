@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
             if (result.getDevice().getName().contains(editTextDevName.getText().toString())) {
                 if (!devices.contains(device)) {
                     devices.add(device);
-                    deviceNames.add(device.getName());
+                    deviceNames.add(device.getAddress() + " | " + device.getName());
                     Log.i("mytag", "Name: " + result.getDevice().getName() + " " +
                             "Address: " + result.getDevice().getAddress());
                     Log.i("mytag", String.valueOf(devices.size()));

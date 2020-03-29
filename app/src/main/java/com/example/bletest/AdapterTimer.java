@@ -63,10 +63,17 @@ public class AdapterTimer extends BaseAdapter {
         TextView textView;
         ((TextView) view.findViewById(R.id.textViewId)).setText(String.valueOf(position+1));
         textView = ((TextView) view.findViewById(R.id.textViewType));
-        if(timer.type == 0) textView.setText("Hard");
-        else textView.setText("Soft");
+        String s;
+        if(timer.type == 0){
+            textView.setText("Hard");
+            s = "";
+        }
+        else{
+            textView.setText("Soft");
+            s = BlanketTimer.timeToString(timer.time_stop);
+        }
         ((TextView) view.findViewById(R.id.textViewStart)).setText(BlanketTimer.timeToString(timer.time_start));
-        ((TextView) view.findViewById(R.id.textViewStop)).setText(BlanketTimer.timeToString(timer.time_stop));
+        ((TextView) view.findViewById(R.id.textViewStop)).setText(s);
         Switch sw = ((Switch)view.findViewById(R.id.switchOn));
         sw.setTag(position);
         if(timer.enable == 1) sw.setChecked(true);

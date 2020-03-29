@@ -11,7 +11,6 @@ public class BlanketTimer {
     int power1, power2, power3;
     int type, complete_flag, enable, res, lrc;
 
-    BlanketTimer(){}
     BlanketTimer(byte[] values){
         if(values.length == 20){
             command =  (int)values[0];
@@ -59,7 +58,9 @@ public class BlanketTimer {
     }
 
     static String timeToString(int time){
-        return String.valueOf(time / 60) + "h:" +
-                String.valueOf(time % 60) + "m";
+        /*return String.valueOf(time / 60) + "h:" +
+                String.valueOf(time % 60) + "m";*/
+        return String.valueOf(time / 60) + ":" +
+                String.valueOf(time % 60);
     }
 }

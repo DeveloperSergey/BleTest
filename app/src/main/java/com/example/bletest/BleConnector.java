@@ -15,12 +15,19 @@ import java.util.UUID;
 
 public class BleConnector{
 
+    enum OPERATIONS{
+        OPERATION_WRITE,
+        OPERATION_READ,
+        OPERATION_DESC_WRITE
+    }
+
     interface BleCallbacks{
         void connectedCallback(List<BluetoothGattService> services);
         void disconnectedCallback();
         void writeCharCallback();
         void readCharCallback(BluetoothGattCharacteristic characteristic);
         void notificationCallback(BluetoothGattCharacteristic characteristic);
+        void operationFailed(OPERATIONS operation);
     }
 
     private final int TRY_NUM = 10;
@@ -142,13 +149,15 @@ public class BleConnector{
             @Override
             public void run() {
 
+                boolean result = false;
                 for(int tryNum = 0; tryNum < TRY_NUM; tryNum++) {
                     if(bleGatt.writeCharacteristic(characteristic)){
                         Log.i("mytag", "Write success");
+                        result = true;
                         break;
                     }
                     else{
-                        Log.i("mytag", "Write fail");
+                        //Log.i("mytag", "Write fail");
                         try {
                             Thread.sleep(TRY_PERIOD);
                         } catch (InterruptedException e) {
@@ -156,6 +165,7 @@ public class BleConnector{
                         }
                     }
                 }
+                if(!result) callbacks.operationFailed(OPERATIONS.OPERATION_WRITE);
             }
         });
         thread.start();
@@ -168,13 +178,15 @@ public class BleConnector{
         new Runnable(){
             @Override
             public void run() {
+                boolean result = false;
                 for(int tryNum = 0; tryNum < TRY_NUM; tryNum++) {
                     if(bleGatt.readCharacteristic(characteristic)){
                         Log.i("mytag", "Read success");
+                        result = true;
                         break;
                     }
                     else{
-                        Log.i("mytag", "Read fail");
+                        //Log.i("mytag", "Read fail");
                         try {
                             Thread.sleep(TRY_PERIOD);
                         } catch (InterruptedException e) {
@@ -182,6 +194,7 @@ public class BleConnector{
                         }
                     }
                 }
+                if(!result) callbacks.operationFailed(OPERATIONS.OPERATION_READ);
             }
         });
         thread.start();
@@ -195,13 +208,15 @@ public class BleConnector{
                     @Override
                     public void run() {
 
+                        boolean result = false;
                         for(int tryNum = 0; tryNum < TRY_NUM; tryNum++) {
                             if(bleGatt.writeDescriptor(descriptor)){
                                 Log.i("mytag", "Write desc success");
+                                result = true;
                                 break;
                             }
                             else{
-                                Log.i("mytag", "Write desc fail");
+                                //Log.i("mytag", "Write desc fail");
                                 try {
                                     Thread.sleep(TRY_PERIOD);
                                 } catch (InterruptedException e) {
@@ -209,6 +224,7 @@ public class BleConnector{
                                 }
                             }
                         }
+                        if(!result) callbacks.operationFailed(OPERATIONS.OPERATION_DESC_WRITE);
                     }
                 });
         thread.start();
