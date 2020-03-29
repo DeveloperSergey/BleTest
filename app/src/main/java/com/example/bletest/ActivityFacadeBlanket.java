@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,6 +85,7 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
     ArrayList<BlanketTimer> timers = new ArrayList<>();
     AdapterTimer adapterTimer;
     ListView listViewTimers;
+    ScrollView scrollView;
 
     // Android timers
     final int timerAppTimePeriod = 1000;
@@ -172,10 +174,11 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
 
         // Timers
 
+        View header = getLayoutInflater().inflate(R.layout.blanket_list_header, null);
         adapterTimer = new AdapterTimer(this, ctx, timers);
         listViewTimers = (ListView)findViewById(R.id.listViewTimers);
+        listViewTimers.addHeaderView(header, "", false);
         listViewTimers.setAdapter(adapterTimer);
-
         textViewPwm = (TextView)findViewById(R.id.textViewPwm);
         /*seekBarPwm = (SeekBar)findViewById(R.id.seekBarPwm);
         seekBarPwm.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
