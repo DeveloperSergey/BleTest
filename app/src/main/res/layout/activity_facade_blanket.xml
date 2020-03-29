@@ -83,9 +83,7 @@
 
                 <TableLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/temperature_background">
-
+                    android:layout_height="match_parent">
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -105,7 +103,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:padding="10dp">
+                        android:padding="10dp"
+                        android:background="@drawable/temperature_background">
 
                         <TextView
                             android:id="@+id/textViewCurrPowerMode"
@@ -128,7 +127,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:padding="10dp">
+                        android:padding="10dp"
+                        android:background="@drawable/temperature_background">
 
                         <TextView
                             android:id="@+id/textView"
@@ -158,7 +158,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:padding="10dp">
+                        android:padding="10dp"
+                        android:background="@drawable/temperature_background">
 
                         <TextView
                             android:id="@+id/textViewVolt"
@@ -188,9 +189,7 @@
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/temperature_background"
-                    android:gravity="center_vertical"
-                    android:padding="10dp">
+                    android:gravity="center_vertical">
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -200,7 +199,6 @@
                             android:id="@+id/textViewTempTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="Temperature"
@@ -209,7 +207,9 @@
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:background="@drawable/temperature_background"
+                        android:paddingLeft="10dp">
 
                         <TextView
                             android:layout_width="150dp"
@@ -231,7 +231,9 @@
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:background="@drawable/temperature_background"
+                        android:paddingLeft="10dp">
 
                         <TextView
                             android:layout_width="150dp"
@@ -255,6 +257,14 @@
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="10dp" />
+
+                <TextView
+                    android:id="@+id/textViewSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Settings"
+                    android:textSize="18sp" />
 
                 <fragment
                     android:id="@+id/fragmentPowerModesBlt"
