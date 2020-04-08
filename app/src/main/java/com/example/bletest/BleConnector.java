@@ -37,7 +37,6 @@ public class BleConnector{
     private BleCallbacks callbacks;
     public BluetoothGatt bleGatt = null;
     private boolean connected = false;
-    private ArrayList<BluetoothGattCharacteristic> sequenceToWrite = new ArrayList<>();
 
     final int STATE_DISCONNECTED = 0;
     final int STATE_CONNECTING = 1;
@@ -143,7 +142,6 @@ public class BleConnector{
     }
     public boolean writeChar(final BluetoothGattCharacteristic characteristic){
 
-        //sequenceToWrite.add(characteristic);
         Thread thread = new Thread(
         new Runnable(){
             @Override
@@ -157,7 +155,6 @@ public class BleConnector{
                         break;
                     }
                     else{
-                        //Log.i("mytag", "Write fail");
                         try {
                             Thread.sleep(TRY_PERIOD);
                         } catch (InterruptedException e) {
@@ -186,7 +183,6 @@ public class BleConnector{
                         break;
                     }
                     else{
-                        //Log.i("mytag", "Read fail");
                         try {
                             Thread.sleep(TRY_PERIOD);
                         } catch (InterruptedException e) {
@@ -216,7 +212,6 @@ public class BleConnector{
                                 break;
                             }
                             else{
-                                //Log.i("mytag", "Write desc fail");
                                 try {
                                     Thread.sleep(TRY_PERIOD);
                                 } catch (InterruptedException e) {

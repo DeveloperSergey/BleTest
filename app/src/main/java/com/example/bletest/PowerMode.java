@@ -4,8 +4,6 @@ import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.util.Date;
-
 public class PowerMode {
     private int id;
     private TextView textViewTime, textViewVal;
@@ -31,8 +29,6 @@ public class PowerMode {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     textViewTime.setText(BlanketTimer.timeToString(seekBar.getProgress()));
-                    /*textViewTime.setText(String.valueOf(seekBar.getProgress() / 60) + "h:" +
-                            String.valueOf(seekBar.getProgress() % 60) + "m");*/
                 }
 
                 @Override

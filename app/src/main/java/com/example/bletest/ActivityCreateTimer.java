@@ -2,15 +2,10 @@ package com.example.bletest;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
@@ -95,9 +90,7 @@ public class ActivityCreateTimer extends AppCompatActivity implements FragmentPo
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-        Log.i("mytag", "LISTENER IN ACTIVITY FROM FRAGMENT");
-    }
+    public void onFragmentInteraction(Uri uri) { }
 
     public void addOnClick(View view){
         byte[] values = new byte[20];
@@ -129,7 +122,6 @@ public class ActivityCreateTimer extends AppCompatActivity implements FragmentPo
         // Type soft
         if(radioButtonSoft.isChecked()) values[15] = 1;
         else values[15] = 0;
-
 
         // Enable
         values[16] = 1;
