@@ -63,7 +63,7 @@ public class AdapterTimer extends BaseAdapter {
         TextView textView;
         ((TextView) view.findViewById(R.id.textViewId)).setText(String.valueOf(position+1));
         textView = ((TextView) view.findViewById(R.id.textViewType));
-        String s;
+        String s, s2;
         if(timer.type == 0){
             textView.setText("Hard");
             s = "";
@@ -72,8 +72,12 @@ public class AdapterTimer extends BaseAdapter {
             textView.setText("Soft");
             s = BlanketTimer.timeToString(timer.time_stop);
         }
+        if(timer.complete_flag == 0) s2 = "ready";
+        else s2 = "complete";
+
         ((TextView) view.findViewById(R.id.textViewStart)).setText(BlanketTimer.timeToString(timer.time_start));
         ((TextView) view.findViewById(R.id.textViewStop)).setText(s);
+        ((TextView) view.findViewById(R.id.textViewState)).setText(s2);
         Switch sw = ((Switch)view.findViewById(R.id.switchOn));
         sw.setTag(position);
         if(timer.enable == 1) sw.setChecked(true);

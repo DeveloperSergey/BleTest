@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
-    android:layout_marginBottom="8dp">
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textViewFactory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:gravity="center"
-            android:text="Factory"
-            android:textSize="14sp" />
+    <TextView
+        android:id="@+id/textViewFactory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:text="Factory"
+        android:textSize="14sp" />
 
     <TableLayout
         android:layout_width="match_parent"
@@ -56,195 +56,241 @@
     </TableLayout>
 
     <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+            <TextView
+                android:id="@+id/textViewState"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="State"
+                android:textSize="18sp" />
+        </TableRow>
 
-                <TextView
-                    android:id="@+id/textViewState"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="State"
-                    android:textSize="18sp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:padding="10dp"
-                android:background="@drawable/temperature_background">
-
-                <TextView
-                    android:id="@+id/textViewCurrPowerMode"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:text="Current power mode"
-                    android:textSize="14sp" />
-
-
-                <TextView
-                    android:id="@+id/textViewCurrPowerModeVal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="DISABLE"
-                    android:textSize="18sp" />
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:padding="10dp"
-                android:background="@drawable/temperature_background">
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:text="Current power"
-                    android:textSize="14sp" />
-                <!--
-        <SeekBar
-            android:id="@+id/seekBarPwm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="1" />
-            -->
-
-                <TextView
-                    android:id="@+id/textViewPwm"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0%"
-                    android:textSize="18sp" />
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:padding="10dp"
-                android:background="@drawable/temperature_background">
-
-                <TextView
-                    android:id="@+id/textViewVolt"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:text="Voltage"
-                    android:textSize="14sp" />
-
-
-                <TextView
-                    android:id="@+id/textViewVoltVal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0 V"
-                    android:textSize="18sp" />
-            </TableRow>
-
-        </TableLayout>
-
-
-        <Space
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="10dp" />
+            android:layout_height="match_parent"
+            android:background="@drawable/temperature_background"
+            android:gravity="center_vertical"
+            android:padding="10dp">
 
-        <TableLayout
+
+            <TextView
+                android:id="@+id/textViewCurrTimer"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Current timer"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/textViewCurrTimerVal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:layout_height="match_parent"
+            android:background="@drawable/temperature_background"
+            android:gravity="center_vertical"
+            android:padding="10dp">
 
-            <TableRow
+
+            <TextView
+                android:id="@+id/textViewCurrPowerMode"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Current power mode"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/textViewCurrPowerModeVal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="DISABLE"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/temperature_background"
+            android:gravity="center_vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Current power"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textViewPwm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0%"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/temperature_background"
+            android:gravity="center_vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/textViewTimeLeft"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Time left"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/textViewTimeLeftVal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/temperature_background"
+            android:gravity="center_vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/textViewVolt"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Voltage"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/textViewVoltVal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0 V"
+                android:textSize="18sp" />
+        </TableRow>
+
+    </TableLayout>
+
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewTempTitle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Temperature"
+                android:textSize="18sp" />
+        </TableRow>
 
-                <TextView
-                    android:id="@+id/textViewTempTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Temperature"
-                    android:textSize="18sp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/temperature_background"
-                android:paddingLeft="10dp">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="Board:" />
-
-                <TextView
-                    android:id="@+id/textViewTempBoard"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="25 &#176;C"
-                    android:textColor="#AD2C2C"
-                    android:textSize="18sp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/temperature_background"
-                android:paddingLeft="10dp">
-
-                <TextView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="Sensor:" />
-
-                <TextView
-                    android:id="@+id/textViewTemp1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="25 &#176;C"
-                    android:textSize="18sp" />
-            </TableRow>
-
-        </TableLayout>
-
-        <Space
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="10dp" />
+            android:layout_height="match_parent"
+            android:background="@drawable/temperature_background"
+            android:paddingLeft="10dp">
 
-        <TextView
-            android:id="@+id/textViewSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Settings"
-            android:textSize="18sp" />
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="Board:" />
 
-        <fragment
-            android:id="@+id/fragmentPowerModesBlt"
-            android:name="com.example.bletest.FragmentPowerModes"
+            <TextView
+                android:id="@+id/textViewTempBoard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="25 &#176;C"
+                android:textColor="#AD2C2C"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:background="@drawable/temperature_background"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="Sensor:" />
+
+            <TextView
+                android:id="@+id/textViewTemp1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="25 &#176;C"
+                android:textSize="18sp" />
+        </TableRow>
+
+    </TableLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <TextView
+        android:id="@+id/textViewSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Settings"
+        android:textSize="18sp" />
+
+    <fragment
+        android:id="@+id/fragmentPowerModesBlt"
+        android:name="com.example.bletest.FragmentPowerModes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/buttonStart"
@@ -254,8 +300,8 @@
         android:text="START" />
 
     <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp" />
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 
     <TextView
         android:id="@+id/textViewTimerTitle"
@@ -265,35 +311,35 @@
         android:text="Timers"
         android:textSize="18sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/buttonAdd"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="timersAddOnClick"
-                android:text="ADD" />
+        <Button
+            android:id="@+id/buttonAdd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="timersAddOnClick"
+            android:text="ADD" />
 
-            <Button
-                android:id="@+id/buttonUpdate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="timersUpdate"
-                android:text="READ ALL" />
+        <Button
+            android:id="@+id/buttonUpdate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="timersUpdate"
+            android:text="READ ALL" />
 
-            <Button
-                android:id="@+id/buttonClr"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="timersClrOnClick"
-                android:text="CLEAR" />
+        <Button
+            android:id="@+id/buttonClr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="timersClrOnClick"
+            android:text="CLEAR" />
 
-        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

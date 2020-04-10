@@ -34,6 +34,7 @@ public class ActivityCreateTimer extends AppCompatActivity implements FragmentPo
         seekBarTimeStart.setMax(24*60);
         seekBarTimeStop = (SeekBar)findViewById(R.id.seekBarStop);
         seekBarTimeStop.setMax(24*60);
+        seekBarTimeStop.setProgress(24*60);
         seekBarTimeStop.setEnabled(false);
 
         seekBarTimeStart.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

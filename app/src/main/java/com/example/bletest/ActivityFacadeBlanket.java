@@ -48,7 +48,9 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
 
     // GUI
     Context ctx;
-    TextView textViewTime, textViewTimeDev, textViewFactory, textViewPwm, textViewCurrPowerMode, textViewVoltage;
+    TextView textViewTime, textViewTimeDev,
+            textViewFactory,
+            textViewPwm, textViewCurrPowerMode, textViewCurrTimer, textViewTimeLeft,textViewVoltage;
     Timer timerApp, timerDev;
     ArrayList<TextView> textViewsTemp = new ArrayList<>();
 
@@ -106,6 +108,8 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         textViewFactory = (TextView)findViewById(R.id.textViewFactory);
         textViewCurrPowerMode = (TextView) findViewById(R.id.textViewCurrPowerModeVal);
         textViewVoltage = (TextView) findViewById(R.id.textViewVoltVal);
+        textViewCurrTimer  = (TextView) findViewById(R.id.textViewCurrTimerVal);
+        textViewTimeLeft = (TextView) findViewById(R.id.textViewTimeLeftVal);
 
         // Fields for temperatures <-- temperatures from characteristics
         textViewsTemp.add((TextView) findViewById(R.id.textViewTempBoard));
@@ -235,10 +239,12 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
             }
         }
         else if(uuid.toString().equals(svcStatusUUID)) {
-            int powerMode = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 1);
-            int pwm = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 2);
-            int voltage = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 3);
-            updateStatus(powerMode, pwm, voltage);
+            int currTimer = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 1);
+            int powerMode = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 2);
+            int pwm = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 3);
+            int time_left = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 4);
+            int voltage = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 6);
+            updateStatus(currTimer, powerMode, pwm, time_left, voltage);
         }
     }
 
@@ -516,13 +522,13 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
         });
     }
 
-    public void updateStatus(final int pm, final int pwm, final int vol){
+    public void updateStatus(final int currTimer, final int powerMode, final int pwm, final int time_left, final int voltage){
 
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 String powerModeStr;
-                switch (pm){
+                switch (powerMode){
                     case 0: powerModeStr = "DISABLE"; break;
                     case 1: powerModeStr = "MODE 1"; break;
                     case 2: powerModeStr = "MODE 2"; break;
@@ -530,10 +536,12 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                     default: powerModeStr = "NOT FOUND";
                 }
 
+                textViewCurrTimer.setText(String.valueOf(currTimer));
                 textViewCurrPowerMode.setText(powerModeStr);
                 textViewPwm.setText(String.valueOf(pwm) + " %");
-                textViewVoltage.setText(String.valueOf(vol/1000) + ","
-                        + String.valueOf((vol/100)%10) + " V");
+                textViewTimeLeft.setText(String.valueOf(time_left));
+                textViewVoltage.setText(String.valueOf(voltage/1000) + ","
+                        + String.valueOf((voltage/100)%10) + " V");
             }
         });
     }
