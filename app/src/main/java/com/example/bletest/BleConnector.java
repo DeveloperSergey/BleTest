@@ -198,7 +198,10 @@ public class BleConnector{
         return true;
     }
     public boolean writeDesc(final BluetoothGattDescriptor descriptor){
-        if(descriptor == null) return false;
+        if(descriptor == null){
+            Log.i("mytag", "Descriptor is null");
+            return false;
+        }
         Thread thread = new Thread(
                 new Runnable(){
                     @Override
