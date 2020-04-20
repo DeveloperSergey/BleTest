@@ -125,18 +125,26 @@
 
         </TableLayout>
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/buttonChooseFile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Choose file" />
+            android:text="Choose file"
+            android:onClick="chooseFileClicked"/>
 
         <Button
             android:id="@+id/buttonUpdate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Update" />
+            android:text="Update"
+            android:onClick="updateClicked"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
