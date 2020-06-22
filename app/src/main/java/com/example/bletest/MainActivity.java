@@ -118,6 +118,10 @@ public class MainActivity extends AppCompatActivity {
                     /*Intent intent = new Intent(ctx, ActivityFacadeInsole.class);
                     intent.putExtra("device", device);
                     startActivity(intent);*/
+
+                    /*Intent intent = new Intent(ctx, ActivityFacadeBlanket.class);
+                    intent.putExtra("device", device);
+                    startActivity(intent);*/
                 }
             }
         });
@@ -235,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startScan();
                 } else {
                 }
                 return;

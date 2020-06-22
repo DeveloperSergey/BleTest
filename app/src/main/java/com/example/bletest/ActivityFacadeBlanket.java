@@ -259,7 +259,8 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                 public void run() {
                     for(int i = 0; i < 2; i++) {
                         int temp = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_SINT8, i);
-                        textViewsTemp.get(i).setText(String.valueOf(temp) + "\u00B0 C");
+                        if(temp == -1)textViewsTemp.get(i).setText("Not connected");
+                        else textViewsTemp.get(i).setText(String.valueOf(temp) + "\u00B0 C");
                     }
                 }
             });
@@ -536,7 +537,8 @@ public class ActivityFacadeBlanket extends AppCompatActivity implements BleConne
                     default: powerModeStr = "NOT FOUND";
                 }
 
-                textViewCurrTimer.setText(String.valueOf(currTimer));
+                if(currTimer == 255) textViewCurrTimer.setText("NONE");
+                else textViewCurrTimer.setText(String.valueOf(currTimer));
                 textViewCurrPowerMode.setText(powerModeStr);
                 textViewPwm.setText(String.valueOf(pwm) + " %");
                 textViewTimeLeft.setText(String.valueOf(time_left));

@@ -214,7 +214,7 @@ public class ActivityImageLoader extends AppCompatActivity implements BleConnect
         // Read Identification
         //byte[] values = imgHdr.getBytes();
         Log.i("mytag", "GET HDR");
-        byte[] values = {0, 0, 0, 0, 0, 0};
+        byte[] values = {0, 0, 0, 0};
         BluetoothGattService service = bleConnector.bleGatt.getService(UUID.fromString(svUUID));
         BluetoothGattCharacteristic charIdentify = service.getCharacteristic(UUID.fromString(svcIdentifyUUID));
         charIdentify.setValue(values);

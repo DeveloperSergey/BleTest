@@ -8,6 +8,7 @@
         <item>BlanketFacade</item>
         <item>InsoleFacade</item>
         <item>ImageLoader</item>
+        <item>InsoleArchive</item>
     </string-array>
     <string name="title_activity_blanket_timers">ActivityBlanketTimers</string>
 

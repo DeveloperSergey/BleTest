@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -33,6 +34,9 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
     Context ctx;
     BluetoothDevice device;
     BleConnector bleConnector;
+    ArrayList<Integer> valuesHumidityAdc = new ArrayList<>();
+    ArrayList<Integer> valuesHumidityNull = new ArrayList<>();
+    ArrayList<Integer> valuesHumidityThreshold = new ArrayList<>();
     ArrayList<Integer> valuesHumidity = new ArrayList<>();
     ArrayList<Integer> valuesTemperature = new ArrayList<>();
     protected GraphView graphHumi, graphTemp;
@@ -105,11 +109,11 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
                 (byte) 0, // Pedometer
                 (byte) 1, // Measurement period
 
-                (byte) 15, // Temperature
-                (byte) 15,
+                (byte) 20, // Temperature
+                (byte) 20,
 
-                (byte) 100, // Humidity
-                (byte) 100,
+                (byte) 0xc8, // Humidity
+                (byte) 0xc8,
         };
         charUserSettings.setValue(values);
         bleConnector.writeChar(charUserSettings);
@@ -136,15 +140,23 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
 
         if(uuid.toString().equals(svcResultUUID)) {
             //Log.i("mytag", "TIME CALLBACK");
-            int humidity = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 6);
-            int adc_humidity = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 7);
             int temperature = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 4);
             int adc_temperature = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 5);
-            valuesHumidity.add(adc_humidity);
+            int humidity = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 6);
+            int humidityAdc = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 7);
+            int humidityNull = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 8);
+            int humidityThreshold = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 9);
+            valuesHumidity.add(humidity);
+            valuesHumidityAdc.add(humidityAdc);
+            valuesHumidityNull.add(humidityNull);
+            valuesHumidityThreshold.add(humidityThreshold);
+
             valuesTemperature.add(temperature);
             handler.post(updateGraph);
+
+
             Log.i("mytag", "Humidity = " + String.valueOf(humidity) +
-                    " ADC = " + String.valueOf(adc_humidity));
+                    " ADC = " + String.valueOf(humidityAdc));
         }
     }
 
@@ -167,20 +179,42 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
             int maxTemperatureY = -1000000, minTemperatureY = 1000000;
 
             LineGraphSeries<DataPoint> mySeriesHumidity = new LineGraphSeries<>();
+            LineGraphSeries<DataPoint> mySeriesHumidityAdc = new LineGraphSeries<>();
+            LineGraphSeries<DataPoint> mySeriesHumidityNull = new LineGraphSeries<>();
+            LineGraphSeries<DataPoint> mySeriesHumidityThreshold = new LineGraphSeries<>();
             LineGraphSeries<DataPoint> mySeriesTemperature = new LineGraphSeries<>();
 
             int lastNum = 300;
-            int size = valuesHumidity.size();
+            int size = valuesHumidityAdc.size();
             int index = 0;
             int graphIndex = 0;
-            if(valuesHumidity.size() > lastNum) {
-                index = valuesHumidity.size() - lastNum;
+            if(valuesHumidityAdc.size() > lastNum) {
+                index = valuesHumidityAdc.size() - lastNum;
                 size = lastNum;
             }
             while(graphIndex < size){
+
                 // Humidity
                 int value = valuesHumidity.get(index);
                 mySeriesHumidity.appendData(new DataPoint(graphIndex, value), true, valuesHumidity.size());
+                if (value > maxHumidityY) maxHumidityY = value;
+                if (value < minHumidityY) minHumidityY = value;
+
+                // Humidity ADC
+                value = valuesHumidityAdc.get(index);
+                mySeriesHumidityAdc.appendData(new DataPoint(graphIndex, value), true, valuesHumidityAdc.size());
+                if (value > maxHumidityY) maxHumidityY = value;
+                if (value < minHumidityY) minHumidityY = value;
+
+                // Humidity Nul
+                value = valuesHumidityNull.get(index);
+                mySeriesHumidityNull.appendData(new DataPoint(graphIndex, value), true, valuesHumidityNull.size());
+                if (value > maxHumidityY) maxHumidityY = value;
+                if (value < minHumidityY) minHumidityY = value;
+
+                // Humidity Threshold
+                value = valuesHumidityThreshold.get(index);
+                mySeriesHumidityThreshold.appendData(new DataPoint(graphIndex, value), true, valuesHumidityThreshold.size());
                 if (value > maxHumidityY) maxHumidityY = value;
                 if (value < minHumidityY) minHumidityY = value;
 
@@ -195,6 +229,19 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
 
             mySeriesHumidity.setDrawDataPoints(true);
             mySeriesHumidity.setDataPointsRadius(5);
+            mySeriesHumidity.setColor(Color.argb(0xff, 0, 0, 255));
+
+            mySeriesHumidityAdc.setDrawDataPoints(true);
+            mySeriesHumidityAdc.setDataPointsRadius(5);
+            mySeriesHumidityAdc.setColor(Color.argb(0xff, 0, 255, 0));
+
+            mySeriesHumidityNull.setDrawDataPoints(true);
+            mySeriesHumidityNull.setDataPointsRadius(5);
+            mySeriesHumidityNull.setColor(Color.argb(0xff, 0, 0, 0));
+
+            mySeriesHumidityThreshold.setDrawDataPoints(true);
+            mySeriesHumidityThreshold.setDataPointsRadius(5);
+            mySeriesHumidityThreshold.setColor(Color.argb(0xff, 255, 0, 0));
 
             mySeriesTemperature.setDrawDataPoints(true);
             mySeriesTemperature.setDataPointsRadius(5);
@@ -203,7 +250,16 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
             graphHumi.getViewport().setMaxY(maxHumidityY);
             graphHumi.getViewport().setMinX(0);
             graphHumi.getViewport().setMaxX(size);//(valuesHumidity.size() - 1);
-            LineGraphSeries<DataPoint> series = mySeriesHumidity;
+
+            // Add series
+            LineGraphSeries<DataPoint> series;
+            series = mySeriesHumidity;
+            graphHumi.addSeries(series);
+            series = mySeriesHumidityAdc;
+            graphHumi.addSeries(series);
+            series = mySeriesHumidityNull;
+            graphHumi.addSeries(series);
+            series = mySeriesHumidityThreshold;
             graphHumi.addSeries(series);
             graphHumi.invalidate();
 

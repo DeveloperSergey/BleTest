@@ -48,6 +48,13 @@ public class DialogChooseFacade extends DialogFragment {
                                         ActivityImageLoader.class);
                                 intent.putExtra("device", device);
                                 startActivity(intent);
+                                break;
+                            case 4:
+                                intent = new Intent(getActivity().getApplicationContext(),
+                                        ActivityFacadeInsoleArchive.class);
+                                intent.putExtra("device", device);
+                                startActivity(intent);
+                                break;
                         }
                     }
                 });
