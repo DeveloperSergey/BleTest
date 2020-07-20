@@ -27,6 +27,18 @@ public class DialogChooseFacade extends DialogFragment {
                         switch (which) {
                             case 0:
                                 intent = new Intent(getActivity().getApplicationContext(),
+                                        ActivityImageLoader.class);
+                                intent.putExtra("device", device);
+                                startActivity(intent);
+                                break;
+                            case 1:
+                                intent = new Intent(getActivity().getApplicationContext(),
+                                        ActivitySkintest.class);
+                                intent.putExtra("device", device);
+                                startActivity(intent);
+                                break;
+                            /*case 0:
+                                intent = new Intent(getActivity().getApplicationContext(),
                                         ActivityFacadeDevice.class);
                                 intent.putExtra("device", device);
                                 startActivity(intent);
@@ -54,7 +66,7 @@ public class DialogChooseFacade extends DialogFragment {
                                         ActivityFacadeInsoleArchive.class);
                                 intent.putExtra("device", device);
                                 startActivity(intent);
-                                break;
+                                break;*/
                         }
                     }
                 });

@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityFacadeInsoleArchive"></activity>
+        <activity android:name=".ActivitySkintest"></activity>
+        <activity android:name=".ActivityFacadeInsoleArchive" />
         <activity android:name=".ActivityImageLoader" />
         <activity android:name=".ActivityFacadeInsole" />
         <activity android:name=".ActivityCreateTimer" />

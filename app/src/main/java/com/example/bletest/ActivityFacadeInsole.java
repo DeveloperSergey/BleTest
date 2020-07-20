@@ -69,7 +69,7 @@ public class ActivityFacadeInsole extends AppCompatActivity implements BleConnec
                 Log.i("mytag", "Graph clicked");
             }
         });
-        graphTemp = (GraphView) findViewById(R.id.graphTemp);
+        graphTemp = (GraphView) findViewById(R.id.graphResults);
         graphTemp.getViewport().setYAxisBoundsManual(true);
         graphTemp.getViewport().setXAxisBoundsManual(true);
         graphTemp.setTitle("Temperature");

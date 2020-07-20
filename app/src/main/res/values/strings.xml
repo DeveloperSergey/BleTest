@@ -2,7 +2,9 @@
     <string name="app_name">BleTest</string>
     <string name="textViewFactory" />
     <string name="textViewTime" />
+    <string name="bad_contact">Больше спирта! Больше!</string>
 
+    <!--
     <string-array name="test_array">
         <item>DeviceFacade</item>
         <item>BlanketFacade</item>
@@ -10,6 +12,52 @@
         <item>ImageLoader</item>
         <item>InsoleArchive</item>
     </string-array>
+    -->
+
+    <string-array name="test_array">
+        <item>Loader</item>
+        <item>Tester</item>
+    </string-array>
+
+    <!-- SKINTET -->
+    <string-array name="sk_mux">
+        <item>TISSUE</item>
+        <item>10</item>
+        <item>51</item>
+        <item>100</item>
+    </string-array>
+    <string-array name="sk_afe">
+        <item>test</item>
+        <item>body</item>
+        <item>test+body</item>
+    </string-array>
+    <string-array name="sk_dac">
+        <item>32</item>
+        <item>42</item>
+        <item>56</item>
+        <item>65</item>
+        <item>72</item>
+        <item>85</item>
+        <item>98</item>
+    </string-array>
+    <string-array name="sk_adc">
+        <item>8</item>
+        <item>16</item>
+        <item>32</item>
+        <item>64</item>
+        <item>128</item>
+        <item>250</item>
+        <item>475</item>
+        <item>860</item>
+    </string-array>
+    <string-array name="sk_mode">
+        <item>I</item>
+        <item>Q</item>
+        <item>I/Q</item>
+        <item>M/Ph</item>
+        <item>Work</item>
+    </string-array>
+
     <string name="title_activity_blanket_timers">ActivityBlanketTimers</string>
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 100;
     final String svUUID = "0000fff0-0000-1000-8000-00805f9b34fb";
+    final String sv2UUID = "f000ffc0-0451-4000-b000-000000000000";
 
     private BluetoothAdapter bluetoothAdapter = null;
     private BluetoothLeScanner bleScanner = null;
@@ -106,10 +107,14 @@ public class MainActivity extends AppCompatActivity {
                     BluetoothDevice device = devices.get(position);
                     Log.i("mytag", device.getName() + device.getAddress());
 
-                    // Dialog
+                    /*/ Dialog
                     DialogChooseFacade dialog = new DialogChooseFacade();
                     dialog.setDevice(device);
-                    dialog.show(getSupportFragmentManager(), "dialog");
+                    dialog.show(getSupportFragmentManager(), "dialog");*/
+
+                    Intent intent = new Intent(ctx, ActivitySkintest.class);
+                    intent.putExtra("device", device);
+                    startActivity(intent);
 
                     /*Intent intent = new Intent(ctx, ActivityFacadeBlanket.class);
                     intent.putExtra("device", device);
@@ -178,10 +183,16 @@ public class MainActivity extends AppCompatActivity {
 
             BluetoothDevice device = result.getDevice();
 
-            if (result.getDevice().getName().contains(editTextDevName.getText().toString())) {
+            if ((result.getDevice().getName()!= null) && result.getDevice().getName().contains(editTextDevName.getText().toString())) {
                 if (!devices.contains(device)) {
                     devices.add(device);
-                    deviceNames.add(device.getAddress() + " | " + device.getName());
+                    String address = device.getAddress();
+                    String name = device.getName();
+                    StringBuffer stringBuffer = new StringBuffer();
+                    if(address != null) stringBuffer.append(address);
+                    stringBuffer.append(" | ");
+                    if(name != null) stringBuffer.append(name);
+                    deviceNames.add(stringBuffer.toString());
                     Log.i("mytag", "Name: " + result.getDevice().getName() + " " +
                             "Address: " + result.getDevice().getAddress());
                     Log.i("mytag", String.valueOf(devices.size()));
@@ -208,10 +219,13 @@ public class MainActivity extends AppCompatActivity {
                 bleScanner = bluetoothAdapter.getBluetoothLeScanner();
             if (bleScanner != null) {
                 ScanFilter filter = new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(svUUID)).build();
-                ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
+                ScanFilter filter2 = new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(sv2UUID)).build();
+                ArrayList<ScanFilter> filters = new ArrayList<>();
                 filters.add(filter);
+                filters.add(filter2);
                 ScanSettings settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
-                bleScanner.startScan(filters, settings, scanCallback);
+                //bleScanner.startScan(filters, settings, scanCallback);
+                bleScanner.startScan(scanCallback);
 
                 Log.i("mytag", "Scan is started");
             }
